@@ -1,0 +1,113 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "TaskFlow",
+    "description": "A project management application for small development teams that need lightweight sprint planning, task tracking, and team collaboration without the complexity of enterprise tools.",
+    "type": "web-app",
+    "domain": "project-management",
+    "scale": "medium"
+  },
+  "audience": {
+    "target_users": ["software developers", "team leads", "product managers"],
+    "user_roles": ["admin", "team-lead", "developer", "viewer"],
+    "context": "startup"
+  },
+  "requirements": {
+    "functional": [
+      {
+        "id": "FR-001",
+        "title": "User authentication",
+        "description": "Users can register, login, and manage their accounts with email/password or OAuth (Google, GitHub).",
+        "priority": "must",
+        "source": "document"
+      },
+      {
+        "id": "FR-002",
+        "title": "Sprint planning board",
+        "description": "Kanban-style board with customizable columns (Backlog, In Progress, Review, Done). Drag-and-drop task movement.",
+        "priority": "must",
+        "source": "document"
+      },
+      {
+        "id": "FR-003",
+        "title": "Task management",
+        "description": "Create, edit, assign, and track tasks with title, description, assignee, priority, story points, labels, and due date.",
+        "priority": "must",
+        "source": "document"
+      },
+      {
+        "id": "FR-004",
+        "title": "Team collaboration",
+        "description": "Comment threads on tasks, @mentions, activity feed, and email notifications for assignments and mentions.",
+        "priority": "should",
+        "source": "user-input"
+      },
+      {
+        "id": "FR-005",
+        "title": "Reporting dashboard",
+        "description": "Burndown charts, velocity tracking, sprint summaries, and team workload distribution.",
+        "priority": "should",
+        "source": "inferred"
+      },
+      {
+        "id": "FR-006",
+        "title": "Integration with GitHub",
+        "description": "Link tasks to GitHub PRs and commits. Auto-update task status when PRs are merged.",
+        "priority": "could",
+        "source": "user-input"
+      }
+    ],
+    "non_functional": [
+      {
+        "id": "NFR-001",
+        "category": "performance",
+        "description": "Page load time under 2 seconds for all views",
+        "metric": "P95 latency < 2000ms"
+      },
+      {
+        "id": "NFR-002",
+        "category": "scalability",
+        "description": "Support up to 50 concurrent users per workspace",
+        "metric": "50 concurrent WebSocket connections per workspace"
+      },
+      {
+        "id": "NFR-003",
+        "category": "security",
+        "description": "All data encrypted in transit (TLS 1.3) and at rest (AES-256)",
+        "metric": null
+      }
+    ]
+  },
+  "constraints": {
+    "budget": "low — open source stack preferred",
+    "timeline": "3 months to MVP",
+    "team_size": 3,
+    "existing_stack": [],
+    "mandatory_tech": ["TypeScript"],
+    "excluded_tech": ["PHP", "jQuery"]
+  },
+  "integrations": [
+    {
+      "system": "GitHub",
+      "type": "api",
+      "description": "OAuth login + PR/commit linking via GitHub API v4 (GraphQL)"
+    },
+    {
+      "system": "SendGrid",
+      "type": "service",
+      "description": "Transactional email notifications for assignments and mentions"
+    }
+  ],
+  "output_config": {
+    "language": "en",
+    "format": "both",
+    "output_dir": "docs/architect/"
+  },
+  "metadata": {
+    "generated_at": "2026-04-07T10:30:00Z",
+    "source": "hybrid",
+    "source_file": "docs/requirements.md",
+    "completeness": 0.92,
+    "missing_info": ["deployment preferences", "monitoring requirements"]
+  }
+}
