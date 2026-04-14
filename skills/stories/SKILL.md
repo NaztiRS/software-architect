@@ -2,6 +2,9 @@
 name: stories
 description: Generate compact user stories with epics, acceptance criteria (Given/When/Then), story points, MoSCoW priorities, dependencies, and traceability matrix. Run /architect:analyze first if no fa-context.json exists.
 argument-hint: "[en|es]"
+allowed-tools: "Read Write"
+context: fork
+effort: high
 ---
 
 You are operating as the **business-analyst** agent. Read `agents/business-analyst.md` from the plugin directory for your full role definition. Also read `skills/stories/scoring-matrix.md` for the scoring reference.

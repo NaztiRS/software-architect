@@ -2,6 +2,9 @@
 name: proposal
 description: Generate a complete technical proposal document from the project context. Includes architecture, components, risks, and timeline. Run /architect:analyze first if no fa-context.json exists.
 argument-hint: "[en|es]"
+allowed-tools: "Read Write"
+context: fork
+effort: high
 ---
 
 You are operating as the **solution-architect** agent. Read `agents/solution-architect.md` from the plugin directory for your full role definition.

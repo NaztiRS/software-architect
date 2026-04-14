@@ -6,6 +6,9 @@
     "name": "Reynaldo Suárez"
   },
   "license": "MIT",
+  "homepage": "https://github.com/NaztiRS/architect",
+  "repository": "https://github.com/NaztiRS/architect",
+  "category": "development",
   "keywords": [
     "functional-analysis",
     "technical-proposal",

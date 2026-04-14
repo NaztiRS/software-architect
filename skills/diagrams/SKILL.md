@@ -2,6 +2,7 @@
 name: diagrams
 description: Render the 2 Mermaid diagrams from the proposal (architecture overview + timeline Gantt) as SVG and PNG images. Uses mmdc (mermaid-cli) if installed, falls back to mermaid.ink API. Output to docs/architect/diagrams/.
 argument-hint: "--format [svg|png|both] --theme [neutral|dark|forest]"
+allowed-tools: "Read Write Bash Glob"
 ---
 
 ## Your Mission
@@ -81,18 +82,19 @@ This `export` MUST run before every `mmdc` command in the same shell session.
 For each extracted diagram:
 
 1. Write the Mermaid code to a temporary `.mmd` file
-2. Render SVG:
+2. Use the `render-diagrams.js` script from the plugin's `bin/` directory to render both SVG and PNG:
 ```bash
-mmdc -i temp.mmd -o docs/architect/diagrams/{name}.svg -t neutral -b transparent --width 1200
+node [plugin-dir]/bin/render-diagrams.js temp.mmd docs/architect/diagrams [theme]
 ```
-3. Render PNG:
-```bash
-mmdc -i temp.mmd -o docs/architect/diagrams/{name}.png -t neutral -b white --width 1200 --scale 2
-```
-4. Delete the temporary `.mmd` file
 
-The `neutral` theme produces clean, professional diagrams suitable for corporate documents.
-Use `--scale 2` for PNG to get high-resolution (2x) images suitable for print.
+Usage: `render-diagrams.js <input.mmd> <output-dir> [theme]`
+
+The script handles Chrome detection, creates the output directory, and renders both SVG (transparent background) and PNG (white background, 2x scale) in a single call.
+
+3. Delete the temporary `.mmd` file
+
+The `neutral` theme (default) produces clean, professional diagrams suitable for corporate documents.
+The script uses `--scale 2` for PNG to get high-resolution (2x) images suitable for print.
 
 ### If mmdc is NOT available (fallback to mermaid.ink API):
 

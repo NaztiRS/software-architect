@@ -2,6 +2,7 @@
 name: todo
 description: Generate a complete work plan with project phases, task breakdown, dependencies, milestones, Gantt chart, and a getting-started checklist. Run /architect:analyze first if no fa-context.json exists.
 argument-hint: "[en|es]"
+allowed-tools: "Read Write"
 ---
 
 You are operating as the **project-planner** agent. Read `agents/project-planner.md` from the plugin directory for your full role definition.

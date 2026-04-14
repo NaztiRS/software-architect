@@ -2,6 +2,7 @@
 name: render
 description: Export each architect deliverable independently as DOCX and PDF. Each deliverable gets its own folder with 3 formats (.md, .docx, .pdf). HTML is used only as intermediate for PDF generation and then deleted.
 argument-hint: "[pdf|docx|all]"
+allowed-tools: "Read Write Bash Glob"
 ---
 
 ## Your Mission
@@ -281,51 +282,21 @@ blockquote {
 
 For each deliverable, generate PDF from its temporary HTML using puppeteer.
 
-**IMPORTANT — Script creation pattern:** Do NOT use bash heredocs for JavaScript code. Heredocs with nested quotes break on Windows Git Bash. Instead, use the **Write tool** to create a temporary `.js` file, then run it with `node`, then delete it.
+**IMPORTANT:** Use the `generate-pdf.js` script from the plugin's `bin/` directory instead of creating temporary scripts. This permanent script handles Chrome detection and puppeteer configuration automatically.
 
 1. **Puppeteer (preferred — npm package):**
 
-Use the Write tool to create a temporary script at `docs/architect/deliverables/temp-pdf.js`:
+Run `generate-pdf.js` for each deliverable using the plugin's `bin/` directory:
 
-```javascript
-const puppeteer = require('puppeteer');
-const path = require('path');
-
-(async () => {
-    const htmlPath = path.resolve(process.argv[2]);
-    const pdfPath = path.resolve(process.argv[3]);
-    const projectName = process.argv[4] || 'Project';
-
-    const browser = await puppeteer.launch({
-        headless: 'new',
-        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
-    const page = await browser.newPage();
-    await page.goto('file://' + htmlPath, { waitUntil: 'networkidle0', timeout: 60000 });
-    await page.pdf({
-        path: pdfPath,
-        format: 'A4',
-        printBackground: true,
-        margin: { top: '1.5cm', bottom: '1.5cm', left: '1.5cm', right: '1.5cm' },
-        displayHeaderFooter: true,
-        headerTemplate: '<div style="font-size:8pt; font-family:sans-serif; color:#888; width:100%; text-align:center; padding:5px;">' + projectName + '</div>',
-        footerTemplate: '<div style="font-size:8pt; font-family:sans-serif; color:#888; width:100%; text-align:center; padding:5px;"><span class="pageNumber"></span> / <span class="totalPages"></span></div>'
-    });
-    await browser.close();
-    console.log('PDF generated: ' + pdfPath);
-})().catch(err => { console.error('PDF generation failed:', err.message); process.exit(1); });
-```
-
-Run for each deliverable:
 ```bash
 export PUPPETEER_EXECUTABLE_PATH="[Chrome path from preflight]"
-node docs/architect/deliverables/temp-pdf.js "docs/architect/deliverables/proposal/temp-proposal.html" "docs/architect/deliverables/proposal/proposal.pdf" "ProjectName"
-node docs/architect/deliverables/temp-pdf.js "docs/architect/deliverables/stories/temp-stories.html" "docs/architect/deliverables/stories/stories.pdf" "ProjectName"
-node docs/architect/deliverables/temp-pdf.js "docs/architect/deliverables/techstack/temp-techstack.html" "docs/architect/deliverables/techstack/techstack.pdf" "ProjectName"
-node docs/architect/deliverables/temp-pdf.js "docs/architect/deliverables/todo/temp-todo.html" "docs/architect/deliverables/todo/todo.pdf" "ProjectName"
-rm docs/architect/deliverables/temp-pdf.js
+node [plugin-dir]/bin/generate-pdf.js "docs/architect/deliverables/proposal/temp-proposal.html" "docs/architect/deliverables/proposal/proposal.pdf" "ProjectName"
+node [plugin-dir]/bin/generate-pdf.js "docs/architect/deliverables/stories/temp-stories.html" "docs/architect/deliverables/stories/stories.pdf" "ProjectName"
+node [plugin-dir]/bin/generate-pdf.js "docs/architect/deliverables/techstack/temp-techstack.html" "docs/architect/deliverables/techstack/techstack.pdf" "ProjectName"
+node [plugin-dir]/bin/generate-pdf.js "docs/architect/deliverables/todo/temp-todo.html" "docs/architect/deliverables/todo/todo.pdf" "ProjectName"
 ```
+
+Usage: `generate-pdf.js <input.html> <output.pdf> [project-name]`
 
 Then delete all temporary HTML files:
 ```bash
@@ -343,15 +314,17 @@ Generate DOCX **natively** using the `docx` npm package for each deliverable ind
 
 **Why `docx` instead of `html-to-docx`:** The `html-to-docx` package loses all CSS styling (colors, fonts, table formatting, cover page layout). The `docx` package generates Word-native elements with full style control.
 
-Use the **Write tool** to create a temporary script at `docs/architect/deliverables/temp-docx.js`.
+**IMPORTANT:** Use the `generate-docx.js` script from the plugin's `bin/` directory instead of creating temporary scripts. This permanent script handles markdown parsing, corporate styling, cover pages, tables, and page footers automatically.
 
-The script must:
+Usage: `generate-docx.js <input.md> <output.docx> [fa-context.json]`
 
-1. **Accept a deliverable name as argument** (proposal, stories, techstack, or todo)
-2. **Read the source markdown file** (`deliverables/{name}/{name}.md`) from `docs/architect/`
-3. **Read fa-context.json** for project metadata
-4. **Build the DOCX programmatically** using the `docx` package API
-5. **Save to** `deliverables/{name}/{name}.docx`
+Run for each deliverable:
+```bash
+node [plugin-dir]/bin/generate-docx.js "docs/architect/deliverables/proposal/proposal.md" "docs/architect/deliverables/proposal/proposal.docx" "docs/architect/fa-context.json"
+node [plugin-dir]/bin/generate-docx.js "docs/architect/deliverables/stories/stories.md" "docs/architect/deliverables/stories/stories.docx" "docs/architect/fa-context.json"
+node [plugin-dir]/bin/generate-docx.js "docs/architect/deliverables/techstack/techstack.md" "docs/architect/deliverables/techstack/techstack.docx" "docs/architect/fa-context.json"
+node [plugin-dir]/bin/generate-docx.js "docs/architect/deliverables/todo/todo.md" "docs/architect/deliverables/todo/todo.docx" "docs/architect/fa-context.json"
+```
 
 ### DOCX Structure to Generate
 
@@ -541,21 +514,11 @@ docx.Packer.toBuffer(doc).then(buffer => {
 
 ### Execution
 
-The script should:
-1. Accept a deliverable name as argument (e.g., `proposal`)
-2. Read `fa-context.json` for metadata (project name, description, domain, scale, date)
-3. Read the markdown deliverable and parse it into sections, paragraphs, tables, and lists
-4. For proposal: look for diagram PNGs in `docs/architect/diagrams/` and embed them
-5. Build the Document and save to `deliverables/{name}/{name}.docx`
-
-Run for each deliverable:
-```bash
-node docs/architect/deliverables/temp-docx.js proposal
-node docs/architect/deliverables/temp-docx.js stories
-node docs/architect/deliverables/temp-docx.js techstack
-node docs/architect/deliverables/temp-docx.js todo
-rm docs/architect/deliverables/temp-docx.js
-```
+The `generate-docx.js` script in `bin/` handles all of the above automatically:
+1. Reads `fa-context.json` for metadata (project name, description, domain, scale, date)
+2. Reads the markdown deliverable and parses it into sections, paragraphs, tables, and lists
+3. Generates a cover page with project info
+4. Builds the Document with corporate styling and saves to the output path
 
 If the `docx` package is NOT available:
 > "DOCX generation requires the `docx` package. You can:

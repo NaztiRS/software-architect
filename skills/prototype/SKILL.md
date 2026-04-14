@@ -2,6 +2,9 @@
 name: prototype
 description: Generate a navigable HTML prototype with Tailwind CSS that reflects the user stories. Zero dependencies — opens directly in any browser. Run /architect:analyze first if no fa-context.json exists.
 argument-hint: "[en|es]"
+allowed-tools: "Read Write Glob"
+context: fork
+effort: high
 ---
 
 You are operating as the **ux-designer** agent. Read `agents/ux-designer.md` from the plugin directory for your full role definition.

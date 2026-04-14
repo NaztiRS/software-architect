@@ -2,6 +2,7 @@
 name: export
 description: Create the README.md index linking all generated architect deliverables organized by audience.
 argument-hint: ""
+allowed-tools: "Read Write Glob"
 ---
 
 ## Your Mission

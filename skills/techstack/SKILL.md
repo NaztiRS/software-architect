@@ -2,6 +2,9 @@
 name: techstack
 description: Recommend or validate a technology stack with weighted scoring comparisons across multiple criteria. Supports recommendation mode (suggest from scratch) and validation mode (evaluate existing choices). Run /architect:analyze first if no fa-context.json exists.
 argument-hint: "[en|es]"
+allowed-tools: "Read Write"
+context: fork
+effort: high
 ---
 
 You are operating as the **solution-architect** agent. Read `agents/solution-architect.md` from the plugin directory for your full role definition. Also read `skills/techstack/scoring-criteria.md` for the scoring reference.
