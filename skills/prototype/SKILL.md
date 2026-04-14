@@ -23,24 +23,33 @@ Generate a complete, navigable HTML prototype that brings the project's user sto
 
 Before generating pages, establish a consistent design system based on the project's domain:
 
-### Color Palette
-- Choose colors appropriate to the domain (e.g., blue/professional for fintech, green for health, vibrant for consumer apps)
-- Define: primary, secondary, accent, background, text, success, warning, error colors
-- Use Tailwind color classes consistently
+### Color System (Blue-dominant)
+
+The prototype MUST use a blue-dominant color palette. This is non-negotiable:
+
+- **Navigation bar:** `bg-[#1B365D]` (navy) with white text
+- **Primary buttons:** `bg-[#1B365D] hover:bg-[#2c5282]` with white text
+- **Section headers:** navy gradient or solid navy background
+- **Cards:** white background with `border border-gray-200`
+- **Accent elements:** `text-[#2563eb]` (bright blue) for links and interactive elements
+- **Backgrounds:** `bg-gray-50` for page, `bg-white` for cards
+- **Text:** `text-gray-900` for headings, `text-gray-600` for body
+
+### Design Rules
+
+- **NO border-radius anywhere** — sharp, clean rectangles only. This gives a corporate, professional look.
+- **Inter font** — load via `<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">` and set `font-family: 'Inter', sans-serif` on body
+- **The prototype must look beautiful** — not just functional. Every screen should look like a real product, not a wireframe.
+- **Generous spacing** — use `p-6`, `m-4`, `gap-4` liberally
+- **Consistent shadow** — subtle `shadow-sm` on cards if needed (but sharp, not rounded)
+- **Stats/metrics** as big numbers in cards when relevant
+- **Tables** with navy header row (`bg-[#1B365D] text-white`) and alternating rows
+- **Navigation** must be prominent, fixed at top, navy background, with clear active state
 
 ### Typography
-- Headings: `font-bold` with appropriate sizes (`text-2xl`, `text-xl`, `text-lg`)
-- Body: `text-base` or `text-sm`
-- Use `font-sans` (Tailwind default) for clean look
-
-### Components
-Reuse these patterns across all pages:
-- **Navigation bar** — consistent across all pages, highlights current page
-- **Cards** — for grouping related content
-- **Tables** — for data display
-- **Forms** — for input screens
-- **Buttons** — primary (solid), secondary (outline), danger (red)
-- **Status badges** — for states (active, pending, completed)
+- Headings: `font-bold` with appropriate sizes, `text-[#1B365D]`
+- Body: `text-base text-gray-600`
+- Labels: `text-xs uppercase tracking-wider text-gray-400`
 
 ## Generation Process
 

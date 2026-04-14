@@ -1,220 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{project.name}} — Technical Report</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Source+Sans+Pro:wght@400;600;700&family=Fira+Code&display=swap" rel="stylesheet">
-    <style>
-        /* Reset */
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            font-family: 'Merriweather', Georgia, serif;
-            color: #333;
-            line-height: 1.8;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
-            background: #fff;
-        }
-
-        h1, h2, h3, h4 {
-            font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-            color: #1B365D;
-            margin-top: 2rem;
-            margin-bottom: 0.75rem;
-        }
-
-        h1 { font-size: 2rem; border-bottom: 3px solid #1B365D; padding-bottom: 0.5rem; }
-        h2 { font-size: 1.5rem; border-bottom: 1px solid #CBD5E0; padding-bottom: 0.3rem; }
-        h3 { font-size: 1.2rem; }
-        h4 { font-size: 1.05rem; }
-
-        p { margin-bottom: 1rem; }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1.5rem 0;
-            font-size: 0.95rem;
-        }
-
-        th {
-            background-color: #1B365D;
-            color: white;
-            padding: 0.75rem;
-            text-align: left;
-            font-family: 'Source Sans Pro', sans-serif;
-            font-weight: 600;
-        }
-
-        td { padding: 0.75rem; border-bottom: 1px solid #E2E8F0; }
-        tr:nth-child(even) { background-color: #F7FAFC; }
-        tr:hover { background-color: #EBF4FF; }
-
-        /* Cover page */
-        .cover-page {
-            text-align: center;
-            padding: 4rem 2rem;
-            page-break-after: always;
-            min-height: 90vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .cover-page h1 {
-            font-size: 3rem;
-            border: none;
-            color: #1B365D;
-            margin-bottom: 0.5rem;
-        }
-
-        .cover-page .subtitle {
-            font-size: 1.3rem;
-            color: #666;
-            margin-top: 1rem;
-            max-width: 600px;
-        }
-
-        .cover-page .divider {
-            width: 100px;
-            height: 4px;
-            background-color: #1B365D;
-            margin: 2rem auto;
-        }
-
-        .cover-page .meta {
-            margin-top: 2rem;
-            font-size: 1rem;
-            color: #888;
-            line-height: 2;
-        }
-
-        .cover-page .badge-domain {
-            display: inline-block;
-            padding: 0.3rem 1rem;
-            background-color: #EBF4FF;
-            color: #1B365D;
-            border-radius: 20px;
-            font-family: 'Source Sans Pro', sans-serif;
-            font-weight: 600;
-            font-size: 0.95rem;
-            margin-top: 1rem;
-        }
-
-        /* Table of contents */
-        .toc { page-break-after: always; padding-top: 2rem; }
-        .toc h1 { text-align: center; border: none; margin-bottom: 2rem; }
-        .toc ul { list-style: none; padding: 0; }
-        .toc li { padding: 0.5rem 0; border-bottom: 1px dotted #CBD5E0; }
-        .toc a { color: #1B365D; text-decoration: none; font-family: 'Source Sans Pro', sans-serif; }
-        .toc a:hover { text-decoration: underline; }
-        .toc .toc-h1 { font-weight: 700; font-size: 1.1rem; }
-        .toc .toc-h2 { padding-left: 1.5rem; font-size: 1rem; }
-
-        /* Sections */
-        .section { page-break-before: always; padding-top: 1rem; }
-
-        /* Code */
-        code, pre { font-family: 'Fira Code', 'Consolas', monospace; background-color: #F5F5F5; border-radius: 4px; }
-        code { padding: 0.2rem 0.4rem; font-size: 0.9rem; }
-        pre { padding: 1rem; overflow-x: auto; border-left: 4px solid #1B365D; margin: 1.5rem 0; }
-
-        /* Diagrams */
-        .diagram { text-align: center; margin: 2rem 0; padding: 1rem; }
-        .diagram img { max-width: 100%; height: auto; border: 1px solid #E2E8F0; border-radius: 4px; padding: 1rem; background: white; }
-        .diagram .caption { font-style: italic; color: #666; font-size: 0.9rem; margin-top: 0.5rem; }
-
-        /* Badges */
-        .badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; font-family: 'Source Sans Pro', sans-serif; text-transform: uppercase; letter-spacing: 0.5px; }
-        .badge-must { background-color: #FED7D7; color: #9B2C2C; }
-        .badge-should { background-color: #FEFCBF; color: #975A16; }
-        .badge-could { background-color: #C6F6D5; color: #276749; }
-        .badge-wont { background-color: #E2E8F0; color: #4A5568; }
-
-        /* Scores */
-        .score-high { color: #276749; font-weight: 700; }
-        .score-mid { color: #975A16; font-weight: 600; }
-        .score-low { color: #9B2C2C; font-weight: 600; }
-
-        /* Blockquotes */
-        blockquote { border-left: 4px solid #CBD5E0; margin: 1.5rem 0; padding: 0.75rem 1.5rem; background-color: #F7FAFC; color: #4A5568; }
-
-        /* Lists */
-        ul, ol { margin-bottom: 1rem; padding-left: 1.5rem; }
-        li { margin-bottom: 0.4rem; }
-
-        /* Checkboxes */
-        .checkbox { display: inline-block; width: 1rem; height: 1rem; border: 2px solid #CBD5E0; border-radius: 2px; margin-right: 0.5rem; vertical-align: middle; }
-        .checkbox.checked { background-color: #276749; border-color: #276749; }
-
-        /* Footer */
-        .page-footer { text-align: center; font-size: 0.85rem; color: #888; padding: 2rem 0 1rem; border-top: 1px solid #E2E8F0; margin-top: 3rem; font-family: 'Source Sans Pro', sans-serif; }
-
-        /* Print */
-        @media print {
-            body { padding: 0; max-width: none; font-size: 11pt; }
-            .no-print { display: none; }
-            a { color: #333; text-decoration: none; }
-            .section { page-break-before: always; }
-            .cover-page { min-height: 100vh; }
-            table { font-size: 10pt; }
-            pre { font-size: 9pt; }
-            .page-footer { position: fixed; bottom: 0; width: 100%; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{project.name}} — Technical Report</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    body { font-family: 'Inter', -apple-system, sans-serif; color: #1a1a2e; line-height: 1.7; background: #fff; }
+    .container { max-width: 880px; margin: 0 auto; padding: 2.5rem; }
+    .cover { display: block; text-align: center; background: linear-gradient(135deg, #0f1b3d 0%, #1B365D 40%, #2c5282 100%); color: white; padding: 10rem 3rem 6rem; page-break-after: always; }
+    .cover-logo { width: 80px; height: 80px; border: 2px solid rgba(255,255,255,0.2); display: inline-flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800; margin-bottom: 2rem; background: rgba(255,255,255,0.05); }
+    .cover h1 { font-size: 3.2rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 0.5rem; color: white; }
+    .cover .subtitle { font-size: 1.15rem; font-weight: 300; color: rgba(255,255,255,0.7); max-width: 500px; margin: 0.5rem auto 0; line-height: 1.8; }
+    .cover-divider { width: 60px; height: 3px; background: #63b3ed; margin: 2.5rem auto; }
+    .cover-meta { display: flex; justify-content: center; gap: 2rem; margin-top: 1rem; font-size: 0.85rem; color: rgba(255,255,255,0.5); flex-wrap: wrap; }
+    .cover-badge { margin-top: 2.5rem; display: inline-block; padding: 0.4rem 1.2rem; border: 1px solid rgba(255,255,255,0.15); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; color: rgba(255,255,255,0.6); }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 2.5rem 0; }
+    .stat-card { background: #f8fafc; border: 1px solid #e2e8f0; padding: 1.5rem; text-align: center; }
+    .stat-number { font-size: 2.2rem; font-weight: 800; color: #1B365D; line-height: 1; }
+    .stat-label { font-size: 0.78rem; color: #718096; margin-top: 0.4rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+    .section-banner { background: linear-gradient(135deg, #1B365D 0%, #2c5282 100%); color: white; padding: 1.5rem 2rem; margin: 3rem 0 1.5rem; display: flex; align-items: center; gap: 1rem; }
+    .section-banner .icon { width: 42px; height: 42px; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+    .section-banner h2 { font-size: 1.3rem; font-weight: 700; color: white; }
+    .section-banner .section-desc { font-size: 0.82rem; color: rgba(255,255,255,0.65); }
+    h3 { font-size: 1.15rem; font-weight: 700; color: #1B365D; margin: 2rem 0 0.75rem; padding-bottom: 0.4rem; border-bottom: 2px solid #e2e8f0; }
+    h4 { font-size: 1rem; font-weight: 600; color: #2d3748; margin: 1.5rem 0 0.5rem; }
+    p { margin-bottom: 0.85rem; color: #2d3748; font-size: 0.92rem; }
+    .callout { padding: 1.2rem 1.5rem; margin: 1.5rem 0; display: flex; gap: 1rem; align-items: flex-start; }
+    .callout-icon { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; font-weight: 700; }
+    .callout-content { flex: 1; }
+    .callout-title { font-weight: 700; font-size: 0.88rem; margin-bottom: 0.3rem; }
+    .callout-text { font-size: 0.85rem; line-height: 1.6; }
+    .callout-warning { background: #fffbeb; border: 1px solid #fcd34d; }
+    .callout-warning .callout-icon { background: #fef3c7; color: #d97706; }
+    .callout-warning .callout-title { color: #92400e; }
+    .callout-warning .callout-text { color: #78350f; }
+    .callout-info { background: #eff6ff; border: 1px solid #93c5fd; }
+    .callout-info .callout-icon { background: #dbeafe; color: #2563eb; }
+    .callout-info .callout-title { color: #1e40af; }
+    .callout-info .callout-text { color: #1e3a5f; }
+    .callout-danger { background: #fef2f2; border: 1px solid #fca5a5; }
+    .callout-danger .callout-icon { background: #fee2e2; color: #dc2626; }
+    .callout-danger .callout-title { color: #991b1b; }
+    .callout-danger .callout-text { color: #7f1d1d; }
+    .callout-success { background: #f0fdf4; border: 1px solid #86efac; }
+    .callout-success .callout-icon { background: #dcfce7; color: #16a34a; }
+    .callout-success .callout-title { color: #166534; }
+    .callout-success .callout-text { color: #14532d; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.88rem; border: 1px solid #e2e8f0; }
+    th { background: #1B365D; color: white; padding: 0.85rem 1rem; text-align: left; font-weight: 600; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    td { padding: 0.75rem 1rem; border-bottom: 1px solid #e2e8f0; color: #334155; }
+    tr:nth-child(even) td { background: #f8fafc; }
+    .badge { display: inline-block; padding: 0.2rem 0.65rem; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .badge-must { background: #fee2e2; color: #991b1b; }
+    .badge-should { background: #fef3c7; color: #92400e; }
+    .badge-could { background: #dcfce7; color: #166534; }
+    .badge-wont { background: #f1f5f9; color: #475569; }
+    .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+    .team-card { background: #f8fafc; border: 1px solid #e2e8f0; padding: 1.5rem; text-align: center; }
+    .team-avatar { width: 50px; height: 50px; background: linear-gradient(135deg, #1B365D, #2c5282); color: white; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.75rem; }
+    .team-role { font-weight: 700; font-size: 0.9rem; color: #1B365D; }
+    .team-dedication { font-size: 0.78rem; color: #64748b; margin-top: 0.3rem; }
+    .team-desc { font-size: 0.8rem; color: #475569; margin-top: 0.5rem; line-height: 1.5; }
+    .stack-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+    .stack-card { background: #f8fafc; border: 1px solid #e2e8f0; padding: 1.25rem; }
+    .stack-layer { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; font-weight: 600; margin-bottom: 0.5rem; }
+    .stack-name { font-size: 1.05rem; font-weight: 700; color: #1B365D; }
+    .stack-reason { font-size: 0.78rem; color: #64748b; margin-top: 0.4rem; line-height: 1.5; }
+    .timeline { position: relative; margin: 2rem 0; padding-left: 2rem; }
+    .timeline::before { content: ''; position: absolute; left: 0.6rem; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, #1B365D, #63b3ed); }
+    .timeline-item { position: relative; margin-bottom: 2rem; padding-left: 1.5rem; }
+    .timeline-item::before { content: ''; position: absolute; left: -1.65rem; top: 0.35rem; width: 12px; height: 12px; background: #1B365D; border: 3px solid #dbeafe; }
+    .timeline-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; }
+    .timeline-title { font-weight: 700; font-size: 1rem; color: #1B365D; }
+    .timeline-weeks { font-size: 0.75rem; padding: 0.15rem 0.6rem; background: #eff6ff; color: #2563eb; font-weight: 600; }
+    .timeline-content { font-size: 0.85rem; color: #475569; line-height: 1.6; }
+    .timeline-deliverables { margin-top: 0.5rem; padding: 0; list-style: none; }
+    .timeline-deliverables li { padding: 0.25rem 0; font-size: 0.82rem; color: #475569; display: flex; align-items: center; gap: 0.5rem; }
+    .timeline-deliverables li::before { content: ''; width: 5px; height: 5px; background: #63b3ed; flex-shrink: 0; }
+    .module-card { background: #fff; border: 1px solid #e2e8f0; padding: 1.75rem; margin: 1.5rem 0; border-left: 4px solid #1B365D; }
+    .module-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+    .module-number { width: 32px; height: 32px; background: #1B365D; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; flex-shrink: 0; }
+    .module-title { font-weight: 700; font-size: 1.05rem; color: #1B365D; }
+    .module-objective { font-size: 0.88rem; color: #475569; margin-bottom: 1rem; padding: 0.75rem 1rem; background: #f8fafc; border-left: 3px solid #63b3ed; }
+    .module-steps { list-style: none; padding: 0; counter-reset: step; }
+    .module-steps li { counter-increment: step; padding: 0.4rem 0 0.4rem 2.2rem; position: relative; font-size: 0.85rem; color: #334155; }
+    .module-steps li::before { content: counter(step); position: absolute; left: 0; width: 22px; height: 22px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; }
+    .diagram-container { background: #f8fafc; border: 1px solid #e2e8f0; padding: 2rem; margin: 2rem 0; text-align: center; }
+    .diagram-container img { max-width: 100%; height: auto; }
+    .diagram-caption { font-size: 0.8rem; color: #94a3b8; margin-top: 1rem; font-style: italic; }
+    .scope-in, .scope-out { list-style: none; padding: 0; margin: 1rem 0; }
+    .scope-in li, .scope-out li { padding: 0.5rem 0 0.5rem 2rem; position: relative; font-size: 0.88rem; color: #334155; }
+    .scope-in li::before { content: "\2713"; position: absolute; left: 0; width: 22px; height: 22px; background: #dcfce7; color: #16a34a; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; }
+    .scope-out li::before { content: "\2717"; position: absolute; left: 0; width: 22px; height: 22px; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; }
+    .doc-footer { margin-top: 4rem; padding: 1.5rem 0; border-top: 2px solid #e2e8f0; text-align: center; color: #94a3b8; font-size: 0.8rem; }
+    @media print {
+      body { font-size: 10pt; }
+      .cover { page-break-after: always; }
+      .section-banner { page-break-before: always; }
+      .stat-card, .team-card, .stack-card, .module-card, .callout { break-inside: avoid; }
+      .stats-grid, .team-grid, .stack-grid { break-inside: avoid; }
+      table { break-inside: avoid; }
+    }
+  </style>
 </head>
 <body>
-
-    <!-- Cover Page -->
-    <div class="cover-page">
-        <h1>{{project.name}}</h1>
-        <p class="subtitle">{{project.description}}</p>
-        <div class="divider"></div>
-        <span class="badge-domain">{{project.domain}}</span>
-        <div class="meta">
-            <p><strong>Technical Report</strong></p>
-            <p>Version 1.0 &mdash; {{metadata.generated_at}}</p>
-            <p>Scale: {{project.scale}} | Type: {{project.type}}</p>
-        </div>
+  <div class="cover">
+    <div class="cover-logo">{{project.initials}}</div>
+    <h1>{{project.name}}</h1>
+    <p class="subtitle">{{project.description}}</p>
+    <div class="cover-divider"></div>
+    <div class="cover-meta">
+      <span>{{metadata.generated_at}}</span>
+      <span>|</span>
+      <span>{{project.domain}}</span>
+      <span>|</span>
+      <span>{{project.scale}}</span>
     </div>
-
-    <!-- Table of Contents -->
-    <div class="toc">
-        <h1>Table of Contents</h1>
-        <ul>
-            {{table_of_contents}}
-        </ul>
+    <div class="cover-badge">Technical Report v1.0</div>
+  </div>
+  <div class="container">
+    {{content}}
+  </div>
+  <div class="container">
+    <div class="doc-footer">
+      {{project.name}} — Technical Report — Generated by Architect Plugin
     </div>
-
-    <!-- Section: Technical Proposal -->
-    <div class="section" id="proposal">
-        {{proposal_content}}
-    </div>
-
-    <!-- Section: User Stories -->
-    <div class="section" id="stories">
-        {{stories_content}}
-    </div>
-
-    <!-- Section: Tech Stack Analysis -->
-    <div class="section" id="techstack">
-        {{techstack_content}}
-    </div>
-
-    <!-- Section: Work Plan -->
-    <div class="section" id="todo">
-        {{todo_content}}
-    </div>
-
-    <!-- Footer -->
-    <div class="page-footer">
-        <p>{{project.name}} &mdash; Technical Report &mdash; Generated by <strong>Architect</strong> Plugin</p>
-    </div>
-
+  </div>
 </body>
 </html>

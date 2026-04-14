@@ -40,12 +40,11 @@ const puppeteer = require('puppeteer');
   await page.goto('file://' + htmlPath, { waitUntil: 'networkidle0', timeout: 60000 });
   await page.pdf({
     path: pdfPath,
-    format: 'A4',
+    width: '900px',
+    height: '1270px',
     printBackground: true,
-    margin: { top: '1.5cm', bottom: '1.5cm', left: '1.5cm', right: '1.5cm' },
-    displayHeaderFooter: true,
-    headerTemplate: '<div style="font-size:8pt; font-family:Calibri,sans-serif; color:#888; width:100%; text-align:center; padding:5px;">' + projectName + '</div>',
-    footerTemplate: '<div style="font-size:8pt; font-family:Calibri,sans-serif; color:#888; width:100%; text-align:center; padding:5px;"><span class="pageNumber"></span> / <span class="totalPages"></span></div>'
+    displayHeaderFooter: false,
+    margin: { top: '0', bottom: '0', left: '0', right: '0' }
   });
   await browser.close();
   console.log('PDF generated: ' + pdfPath);
