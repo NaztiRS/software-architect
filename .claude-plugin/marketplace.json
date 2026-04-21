@@ -1,5 +1,5 @@
 {
-  "name": "NaztiRS Plugins",
+  "name": "naztirs-plugins",
   "description": "Professional software architecture and technical proposal generation plugins",
   "owner": {
     "name": "Reynaldo Suárez",
@@ -9,7 +9,7 @@
     {
       "name": "architect",
       "description": "Functional Analysis & Technical Proposal generator. Generates user stories, tech stack analysis, work plans, navigable HTML prototypes, and professional corporate documents (PDF/DOCX) with rendered diagrams.",
-      "source": ".",
+      "source": "./",
       "category": "development",
       "version": "1.0.0",
       "author": {
