@@ -1,6 +1,6 @@
 ---
 name: deliver
-description: Run the complete architect pipeline — analyze requirements, generate technical proposal, user stories, HTML prototype, and export all deliverables. Accepts a requirements document or starts interactive Q&A.
+description: Run the complete architect pipeline — analyze requirements, generate technical proposal, HTML prototype, and export all deliverables. Accepts a requirements document or starts interactive Q&A.
 argument-hint: "[ruta-documento] [--no-review] [--lang en|es]"
 allowed-tools: "Read Write Bash Glob Agent"
 context: fork
@@ -33,21 +33,17 @@ docs/software-architect/
 │   ├── proposal-timeline.svg              ← Step 7
 │   └── proposal-timeline.png              ← Step 7
 └── deliverables/
-    ├── proposal/
-    │   ├── proposal.md                    ← Step 2
-    │   ├── proposal.docx                  ← Step 7
-    │   └── proposal.pdf                   ← Step 7
-    ├── stories/
-    │   ├── stories.md                     ← Step 2
-    │   ├── stories.docx                   ← Step 7
-    │   └── stories.pdf                    ← Step 7
+    └── proposal/
+        ├── proposal.md                    ← Step 2
+        ├── proposal.docx                  ← Step 6
+        └── proposal.pdf                   ← Step 6
 ```
 
 **Rules:**
-- Steps 2 must create `deliverables/{name}/` directories before writing
+- Step 2 must create `deliverables/proposal/` directory before writing
 - Step 4 must create `schema/` directory before writing
 - Step 7 must create `diagrams/` directory before writing
-- Steps 2, 4, 5, 6 must verify their output files exist after writing (use Glob or Bash `ls`)
+- Steps 2, 4, 5 must verify their output files exist after writing (use Glob or Bash `ls`)
 - The only `.md` files in the root of `docs/software-architect/` are `README.md` and `fa-context.json`
 
 ## Pipeline
@@ -55,8 +51,8 @@ docs/software-architect/
 ```
 0. preflight → check environment, install tools
 1. analyze   → fa-context.json
-2. proposal  ──parallel──  stories       (subagents: only parallel pair)
-   ↳ verify: deliverables/proposal/proposal.md + deliverables/stories/stories.md exist
+2. proposal                              (subagent)
+   ↳ verify: deliverables/proposal/proposal.md exists
 3. prototype                              (subagent)
    ↳ verify: prototype/index.html exists
 4. schema                                (direct, no subagent)
@@ -196,42 +192,37 @@ After completion, inform the user:
 > Completeness: [X]%. [Missing items if any].
 > Next: generating technical proposal and user stories..."
 
-## Step 2: Proposal + Stories (Parallel Subagents)
+## Step 2: Proposal (Subagent)
 
-These two are independent and benefit from parallelization. Use the Agent tool:
+Generate the technical proposal using a subagent:
 
-- **Agent 1:** Generate proposal following `skills/proposal/SKILL.md` logic
-- **Agent 2:** Generate stories following `skills/stories/SKILL.md` logic
+- **Agent:** Generate proposal following `skills/proposal/SKILL.md` logic
 
-Both read from the same `fa-context.json`. They don't depend on each other.
+Reads from `fa-context.json`.
 
-**CRITICAL:** Both agents MUST write to `deliverables/` subdirectories:
+**CRITICAL:** The agent MUST write to `deliverables/proposal/`:
 - Proposal → `docs/software-architect/deliverables/proposal/proposal.md`
-- Stories → `docs/software-architect/deliverables/stories/stories.md`
 
-Pass this instruction explicitly to each subagent prompt.
+Pass this instruction explicitly to the subagent prompt.
 
-After both complete, **verify output**:
+After completion, **verify output**:
 
 ```bash
-ls -la docs/software-architect/deliverables/proposal/proposal.md docs/software-architect/deliverables/stories/stories.md
+ls -la docs/software-architect/deliverables/proposal/proposal.md
 ```
 
-If either is missing from the expected path, check if it was written to the wrong location (e.g., root of `docs/software-architect/`). If so, move it:
+If the file is missing from the expected path, check if it was written to the wrong location (e.g., root of `docs/software-architect/`). If so, move it:
 
 ```bash
 mkdir -p docs/software-architect/deliverables/proposal
-mkdir -p docs/software-architect/deliverables/stories
 mv docs/software-architect/proposal.md docs/software-architect/deliverables/proposal/proposal.md 2>/dev/null
-mv docs/software-architect/stories.md docs/software-architect/deliverables/stories/stories.md 2>/dev/null
 ```
 
-> "✅ **Proposal and stories generated.**
-> - Proposal: `docs/software-architect/deliverables/proposal/proposal.md` — [brief summary]
-> - Stories: `docs/software-architect/deliverables/stories/stories.md` — [X] epics, [Y] stories, [Z] points"
+> "✅ **Proposal generated.**
+> - Proposal: `docs/software-architect/deliverables/proposal/proposal.md` — [brief summary]"
 
 **Review checkpoint** (skip if `--no-review`):
-> "Would you like to review these before continuing? (yes/no)"
+> "Would you like to review before continuing? (yes/no)"
 
 ## Step 3: Prototype (Subagent)
 
@@ -299,7 +290,7 @@ After rendering, **verify all expected files exist**:
 echo "=== Diagrams ==="
 ls docs/software-architect/diagrams/*.png docs/software-architect/diagrams/*.svg 2>/dev/null || echo "NO DIAGRAM IMAGES FOUND"
 echo "=== Deliverables ==="
-for name in proposal stories; do
+for name in proposal; do
   echo "--- $name ---"
   ls docs/software-architect/deliverables/$name/$name.{md,docx,pdf} 2>/dev/null || echo "  MISSING FILES for $name"
 done
@@ -323,7 +314,6 @@ After completion:
 > | Deliverable | MD | DOCX | PDF |
 > |------------|-----|------|-----|
 > | Technical Proposal | `deliverables/proposal/proposal.md` | ✅/❌ | ✅/❌ |
-> | User Stories | `deliverables/stories/stories.md` | ✅/❌ | ✅/❌ |
 >
 > | Other | Status | Location |
 > |-------|--------|----------|
@@ -359,13 +349,13 @@ Parse the validator output to identify which areas failed. For each failing area
 
 | Failing Area | Auto-Fix Action |
 |---|---|
-| `deliverables` folder missing | Create `deliverables/{proposal,stories}/` and move any root-level `.md` files into them |
-| `deliverables/*` .md missing | The corresponding skill (proposal/stories) failed — **cannot auto-fix**, report to user |
+| `deliverables` folder missing | Create `deliverables/proposal/` and move any root-level `.md` files into it |
+| `deliverables/*` .md missing | The proposal skill failed — **cannot auto-fix**, report to user |
 | `deliverables/*` .docx or .pdf missing | Re-run the render pipeline for that specific deliverable using `bin/build-report-html.js`, `bin/generate-pdf.js`, `bin/generate-docx.js` |
 | `diagrams` missing PNG/SVG | Re-run diagram rendering: extract Mermaid from `deliverables/proposal/proposal.md` and render with `bin/render-diagrams.js` or mermaid.ink fallback |
 | `schema` missing PNG | Re-run ER diagram rendering with `bin/render-diagrams.js` |
 | `prototype` broken links | Check prototype HTML and fix broken navigation links |
-| `stories` orphan epics | Check story epic references and fix mismatches |
+| `stories` orphan epics | (removed — stories skill no longer exists) |
 
 After applying fixes, **re-run validation**:
 

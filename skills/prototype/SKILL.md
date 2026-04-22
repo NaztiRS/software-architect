@@ -11,13 +11,13 @@ You are operating as the **ux-designer** agent. Read `agents/ux-designer.md` fro
 
 ## Your Mission
 
-Generate a complete, navigable HTML prototype that brings the project's user stories to life. The prototype must look like a real product shipped by a design-led team — not like a wireframe or an AI mock.
+Generate a complete, navigable HTML prototype that brings the project's functional modules to life. The prototype must look like a real product shipped by a design-led team — not like a wireframe or an AI mock.
 
 ## Prerequisites
 
 1. Look for `fa-context.json` in `docs/software-architect/` then `./`.
 2. If not found: "No project context found. Run `/software-architect:analyze` first." Then stop.
-3. Highly recommended: `docs/software-architect/deliverables/stories/stories.md` — map stories to screens. If missing, derive screens from `functional_requirements` in `fa-context.json`.
+3. Highly recommended: `docs/software-architect/deliverables/proposal/proposal.md` — map modules to screens. If missing, derive screens from `functional_requirements` in `fa-context.json`.
 
 ## Design System
 
@@ -113,11 +113,11 @@ Depends on the project:
 - E-commerce / marketplace → hero + featured items grid + categories.
 - Internal tool → task inbox + sidebar filters.
 
-Pick from stories.md. The dashboard must feel populated, not empty.
+Pick from proposal.md modules. The dashboard must feel populated, not empty.
 
-### 2. One page per epic
+### 2. One page per module
 
-For each epic in stories.md, generate at least one page covering its main flow. Include CRUD operations if the epic requires them.
+For each functional module in proposal.md, generate at least one page covering its main flow. Include CRUD operations if the module requires them.
 
 ### 3. `design-system.html` — Component Library
 
@@ -324,10 +324,10 @@ function toast(message, type) {
 
 ### Step 1 — Plan the screens
 
-From `stories.md`, map each epic to 1–2 screens. Write a table inline:
+From `proposal.md` modules, map each module to 1–2 screens. Write a table inline:
 
-| Epic | Screens | Key Interactions | States shown |
-|------|---------|------------------|--------------|
+| Module | Screens | Key Interactions | States shown |
+|--------|---------|------------------|--------------|
 | Authentication | login.html, register.html | Form validation, error, success | invalid email, wrong password, loading |
 | ... | ... | ... | ... |
 

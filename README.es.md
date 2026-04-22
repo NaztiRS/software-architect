@@ -9,7 +9,6 @@ Transforma requisitos de software en documentación profesional y prototipos nav
 | Entregable | Audiencia | Descripción |
 |------------|-----------|-------------|
 | **Propuesta Técnica** | Cliente / Dirección | Arquitectura, riesgos, cronograma, módulos funcionales |
-| **Historias de Usuario** | Desarrolladores / Scrum Master | Épicas, criterios de aceptación (Given/When/Then), story points, MoSCoW, trazabilidad |
 | **Plan de Trabajo** | PM / Tech Lead | Fases, tareas, dependencias, hitos, diagrama Gantt |
 | **Prototipo HTML** | Todos | Pantallas navegables y responsive con Tailwind CSS — sin dependencias |
 
@@ -50,7 +49,6 @@ Corre el pipeline completo. O arranca desde un documento:
 | `/software-architect:deliver` | Pipeline completo — genera todo |
 | `/software-architect:analyze` | Extrae requisitos de un documento o Q&A interactivo |
 | `/software-architect:proposal` | Genera la propuesta técnica |
-| `/software-architect:stories` | Genera historias de usuario (nivel enterprise) |
 | `/software-architect:prototype` | Prototipo HTML navegable |
 | `/software-architect:schema` | Modelo de datos inferido — diagrama ER + SQL de referencia |
 | `/software-architect:diagrams` | Renderiza diagramas Mermaid como SVG/PNG |
@@ -68,7 +66,7 @@ Corre el pipeline completo. O arranca desde un documento:
 
 ## Cómo funciona el pipeline
 
-El pipeline completo (`/software-architect:deliver`) orquesta todo el proceso en 9 pasos:
+El pipeline completo (`/software-architect:deliver`) orquesta todo el proceso en 6 pasos:
 
 ### Paso 0: Preflight Check
 
@@ -89,24 +87,21 @@ El plugin te hace la primera pregunta:
 > - **B)** No — empezamos desde cero con preguntas interactivas
 > - **C)** Documento parcial — lo analizo y pregunto lo que falta
 
-Si proporcionas un documento, el agente **business-analyst** extrae todos los requisitos automáticamente. Calcula un score de completitud — si supera el 85%, solo pide confirmación. Si no, hace preguntas dirigidas sobre lo que falta, una a la vez.
+Si proporcionas un documento, el agente **solution-architect** extrae todos los requisitos automáticamente. Calcula un score de completitud — si supera el 85%, solo pide confirmación. Si no, hace preguntas dirigidas sobre lo que falta, una a la vez.
 
 Si no hay documento, te guía con un cuestionario estructurado: nombre del proyecto, tipo, dominio, escala, usuarios, roles, funcionalidades, restricciones, integraciones y preferencias de salida.
 
 El resultado es un archivo `fa-context.json` — una representación estructurada de todo el contexto del proyecto que consumen los demás skills.
 
-### Paso 2: Proposal + Stories (Paralelo)
+### Paso 2: Proposal
 
-Dos agentes trabajan simultáneamente:
+El agente **solution-architect** genera la **Propuesta Técnica** — con estructura profesional: contexto de mercado, problema, objetivos, alcance funcional (dentro/fuera), módulos detallados (Objetivo → Trigger → Flujo → Tareas), hitos con criterios UAT, arquitectura con tabla de stack, equipo y presupuesto.
 
-- **solution-architect** genera la **Propuesta Técnica** — con estructura profesional: contexto de mercado, problema, objetivos, alcance funcional (dentro/fuera), módulos detallados (Objetivo → Trigger → Flujo → Tareas), hitos con criterios UAT, arquitectura con tabla de stack, equipo y presupuesto.
-- **business-analyst** genera las **Historias de Usuario** — agrupa requisitos en épicas, escribe historias en formato "Como [rol], quiero [acción], para [beneficio]", con criterios de aceptación (Given/When/Then), story points (Fibonacci), prioridades MoSCoW, dependencias y una matriz de trazabilidad que vincula cada requisito con sus historias.
-
-Un checkpoint de revisión te permite ajustar ambos antes de continuar.
+Un checkpoint de revisión te permite ajustar antes de continuar.
 
 ### Paso 3: Prototype
 
-- **ux-designer** genera el **Prototipo HTML** — mapea historias de usuario a pantallas, crea un prototipo navegable con Tailwind CSS (vía CDN). Cada página tiene navegación funcional, datos de ejemplo realistas, diseño responsive y estilo consistente. Sin dependencias — abre `index.html` en cualquier browser.
+- **ux-designer** genera el **Prototipo HTML** — mapea módulos funcionales a pantallas, crea un prototipo navegable con Tailwind CSS (vía CDN). Cada página tiene navegación funcional, datos de ejemplo realistas, diseño responsive y estilo consistente. Sin dependencias — abre `index.html` en cualquier browser.
 
 Un checkpoint de revisión te permite ajustar antes de continuar.
 
@@ -137,7 +132,7 @@ Preflight (Node.js? Chrome? Instalar herramientas)
        |
    analyze → fa-context.json
        |
-   proposal  ──paralelo──  stories
+      proposal
        |
       prototype
        |
@@ -173,21 +168,16 @@ docs/software-architect/
     │   ├── proposal.md
     │   ├── proposal.docx
     │   └── proposal.pdf
-    ├── stories/
-    │   ├── stories.md
-    │   ├── stories.docx
-    │   └── stories.pdf
 ```
 
 ## Agentes especializados
 
-El plugin usa 4 agentes especializados, cada uno con expertise de dominio definido en sus archivos de rol:
+El plugin usa 3 agentes especializados, cada uno con expertise de dominio definido en sus archivos de rol:
 
 | Agente | Rol | Skills | Qué hace |
 |--------|-----|--------|----------|
-| `business-analyst` | Experto en requisitos | analyze, stories | Extrae requisitos de documentos o Q&A. Detecta gaps y supuestos implícitos. Escribe criterios de aceptación en Given/When/Then. Asigna prioridades MoSCoW y story points. Nunca asume — hace preguntas precisas cuando falta información. |
 | `solution-architect` | Experto en arquitectura | proposal | Diseña arquitecturas escalables. Produce diagramas Mermaid. Justifica cada decisión técnica con trade-offs. Escala la complejidad al proyecto. |
-| `ux-designer` | Experto en prototipado | prototype | Mapea historias de usuario a pantallas. Crea prototipos HTML navegables con Tailwind CSS. Usa datos realistas del contexto del proyecto. Asegura diseño responsive y estilo consistente en todas las páginas. |
+| `ux-designer` | Experto en prototipado | prototype | Mapea módulos funcionales a pantallas. Crea prototipos HTML navegables con Tailwind CSS. Usa datos realistas del contexto del proyecto. Asegura diseño responsive y estilo consistente en todas las páginas. |
 | `project-planner` | Experto en planificación | deliver (Paso 4) | Descompone proyectos en fases y tareas. Estima esfuerzo de forma realista (con 20-30% de margen). Identifica dependencias y ruta crítica. Crea diagramas Gantt y checklists priorizados. |
 
 Los agentes escriben en el idioma elegido por el usuario (inglés o español). Los términos técnicos siempre permanecen en inglés.

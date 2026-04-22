@@ -106,7 +106,7 @@ try {
     rootEntries.forEach(function (f) {
       // Check if this .md should be inside deliverables/
       const name = f.replace(/\.md$/, '');
-      if (['proposal', 'stories'].indexOf(name) !== -1) {
+      if (['proposal'].indexOf(name) !== -1) {
         fail('paths', name + '.md is in the root — should be in deliverables/' + name + '/' + f, path.join(docsDir, f));
         strayFiles.push(f);
       }
@@ -123,8 +123,7 @@ if (strayFiles.length === 0) {
 
 const deliverablesDir = path.join(docsDir, 'deliverables');
 const EXPECTED = [
-  { key: 'proposal', label: 'Technical proposal' },
-  { key: 'stories', label: 'User stories' }
+  { key: 'proposal', label: 'Technical proposal' }
 ];
 
 if (!existsDir(deliverablesDir)) {
@@ -170,62 +169,7 @@ if (proposalMd) {
 }
 
 // ---------------------------------------------------------------------------
-// 4. Stories: epic references + MoSCoW badges
-// ---------------------------------------------------------------------------
-
-const storiesMd = readFileSafe(path.join(deliverablesDir, 'stories', 'stories.md'));
-if (storiesMd) {
-  // Collect epic IDs. Convention: headings like "## Epic E1: Authentication" or "### E-01 — Auth"
-  const epicIds = new Set();
-  const epicHeadingRe = /^#{2,3}\s+(?:epic\s+)?([A-Z]{1,3}[-_]?\d+|\bE\d+\b)/gim;
-  let em;
-  while ((em = epicHeadingRe.exec(storiesMd)) !== null) {
-    epicIds.add(em[1].toUpperCase().replace(/[-_]/g, ''));
-  }
-
-  // Collect story references to epics
-  const storyRefs = [];
-  const storyRefRe = /epic[:\s-]+([A-Z]{1,3}[-_]?\d+|\bE\d+\b)/gi;
-  let sm;
-  while ((sm = storyRefRe.exec(storiesMd)) !== null) {
-    storyRefs.push(sm[1].toUpperCase().replace(/[-_]/g, ''));
-  }
-
-  if (epicIds.size > 0) {
-    ok('stories', epicIds.size + ' epic(s) declared');
-    const orphans = storyRefs.filter(r => !epicIds.has(r));
-    if (orphans.length > 0) {
-      const unique = Array.from(new Set(orphans));
-      fail('stories', 'stories reference unknown epic(s): ' + unique.join(', '));
-    }
-  } else {
-    warn('stories', 'no epics detected (convention: "## Epic E1: Name" or "## E-01 Name")');
-  }
-
-  // MoSCoW badges
-  const validMoscow = /\[(MUST|SHOULD|COULD|WON'?T)\]/g;
-  const invalidMoscow = /\[(HIGH|LOW|MEDIUM|CRITICAL|NICE[-\s]?TO[-\s]?HAVE)\]/gi;
-  const bad = storiesMd.match(invalidMoscow) || [];
-  if (bad.length > 0) warn('stories', 'non-MoSCoW priority tags detected: ' + Array.from(new Set(bad)).join(', '));
-
-  const moscowCount = (storiesMd.match(validMoscow) || []).length;
-  if (moscowCount === 0) warn('stories', 'no MoSCoW priority badges found (expected [MUST]/[SHOULD]/[COULD]/[WON\'T])');
-  else ok('stories', moscowCount + ' MoSCoW badge(s) used');
-
-  // Traceability: every FR-xxx / REQ-xxx from context referenced somewhere in stories
-  if (ctx && ctx.requirements && Array.isArray(ctx.requirements.functional)) {
-    const ids = ctx.requirements.functional.map(r => r.id).filter(Boolean);
-    const missing = ids.filter(id => !storiesMd.includes(id));
-    if (missing.length > 0) {
-      warn('stories', 'functional requirement(s) without traceability in stories.md: ' + missing.slice(0, 8).join(', ') + (missing.length > 8 ? ', +' + (missing.length - 8) + ' more' : ''));
-    } else if (ids.length > 0) {
-      ok('stories', ids.length + ' functional requirement(s) all traced');
-    }
-  }
-}
-
-// ---------------------------------------------------------------------------
-// 5. Prototype: internal links and local images resolve
+// 4. Prototype: internal links and local images resolve
 // ---------------------------------------------------------------------------
 
 const protoDir = path.join(docsDir, 'prototype');
@@ -281,7 +225,7 @@ function walkHtml(dir) {
 }
 
 // ---------------------------------------------------------------------------
-// 6. Schema artifacts (optional)
+// 5. Schema artifacts (optional)
 // ---------------------------------------------------------------------------
 
 const schemaDir = path.join(docsDir, 'schema');
@@ -313,7 +257,7 @@ function emitReport() {
   const glyph = { ok: '✓', warn: '⚠', fail: '✗' };
   const byArea = {};
   results.forEach(r => { (byArea[r.area] = byArea[r.area] || []).push(r); });
-  const areaOrder = ['context', 'deliverables', 'diagrams', 'stories', 'prototype', 'schema', 'paths'];
+  const areaOrder = ['context', 'deliverables', 'diagrams', 'prototype', 'schema', 'paths'];
   console.log('architect validate — ' + path.relative(process.cwd(), docsDir));
   console.log('');
   areaOrder.forEach(area => {

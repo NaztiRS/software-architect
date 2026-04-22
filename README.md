@@ -9,7 +9,6 @@ Transform project requirements into enterprise-grade documentation and navigable
 | Deliverable | Audience | Description |
 |------------|----------|-------------|
 | **Technical Proposal** | Client / Direction | Architecture, risks, timeline, functional modules |
-| **User Stories** | Developers / Scrum Master | Epics, acceptance criteria (Given/When/Then), story points, MoSCoW, traceability |
 | **Work Plan** | PM / Tech Lead | Phases, tasks, dependencies, milestones, Gantt chart |
 | **HTML Prototype** | Everyone | Navigable, responsive screens built with Tailwind CSS — zero dependencies |
 
@@ -50,7 +49,6 @@ That runs the full pipeline. Or start with a specific document:
 | `/software-architect:deliver` | Complete pipeline — generates everything |
 | `/software-architect:analyze` | Extract requirements from document or interactive Q&A |
 | `/software-architect:proposal` | Generate technical proposal |
-| `/software-architect:stories` | Generate user stories (enterprise level) |
 | `/software-architect:prototype` | Navigable HTML prototype |
 | `/software-architect:schema` | Inferred data model — ER diagram + reference SQL DDL |
 | `/software-architect:diagrams` | Render Mermaid diagrams as SVG/PNG |
@@ -68,7 +66,7 @@ That runs the full pipeline. Or start with a specific document:
 
 ## How the Pipeline Works
 
-The full pipeline (`/software-architect:deliver`) orchestrates the entire process in 7 steps:
+The full pipeline (`/software-architect:deliver`) orchestrates the entire process in 6 steps:
 
 ### Step 0: Preflight Check
 
@@ -89,24 +87,21 @@ The plugin asks you the first question:
 > - **B)** No — start from scratch with interactive Q&A
 > - **C)** Partial document — analyze it and ask about what's missing
 
-If you provide a document, the **business-analyst** agent extracts all requirements automatically. It calculates a completeness score — if above 85%, it only asks for confirmation. If below, it asks targeted questions one at a time about what's missing.
+If you provide a document, the **solution-architect** agent extracts all requirements automatically. It calculates a completeness score — if above 85%, it only asks for confirmation. If below, it asks targeted questions one at a time about what's missing.
 
 If no document is provided, it walks you through a structured questionnaire: project name, type, domain, scale, users, roles, features, constraints, integrations, and output preferences.
 
 The result is a `fa-context.json` file — a structured representation of the entire project context that all other skills consume.
 
-### Step 2: Proposal + Stories (Parallel)
+### Step 2: Proposal
 
-Two agents work simultaneously:
+The **solution-architect** agent generates the **Technical Proposal** — following a professional structure: market context, problem statement, objectives, functional scope (in/out), detailed modules (Objective → Trigger → Flow → Tasks), milestones with UAT criteria, architecture with stack table, team, and budget.
 
-- **solution-architect** generates the **Technical Proposal** — following a professional structure: market context, problem statement, objectives, functional scope (in/out), detailed modules (Objective → Trigger → Flow → Tasks), milestones with UAT criteria, architecture with stack table, team, and budget.
-- **business-analyst** generates the **User Stories** — grouping requirements into epics, writing stories in "As a [role], I want [action], so that [benefit]" format, with acceptance criteria (Given/When/Then), story points (Fibonacci), MoSCoW priorities, dependencies, and a traceability matrix linking every requirement to its stories.
-
-A review checkpoint lets you adjust both before moving on.
+A review checkpoint lets you adjust before moving on.
 
 ### Step 3: Prototype
 
-- **ux-designer** generates the **HTML Prototype** — mapping user stories to screens, creating a navigable prototype with Tailwind CSS (via CDN). Every page has working navigation, realistic sample data, responsive design, and consistent styling. Zero dependencies — open `index.html` in any browser.
+- **ux-designer** generates the **HTML Prototype** — mapping functional modules to screens, creating a navigable prototype with Tailwind CSS (via CDN). Every page has working navigation, realistic sample data, responsive design, and consistent styling. Zero dependencies — open `index.html` in any browser.
 
 A review checkpoint lets you adjust before moving on.
 
@@ -137,7 +132,7 @@ Preflight (Node.js? Chrome? Install tools)
        |
    analyze → fa-context.json
        |
-   proposal  ──parallel──  stories
+      proposal
        |
       prototype
        |
@@ -175,21 +170,16 @@ docs/software-architect/
     │   ├── proposal.md
     │   ├── proposal.docx
     │   └── proposal.pdf
-    ├── stories/
-    │   ├── stories.md
-    │   ├── stories.docx
-    │   └── stories.pdf
 ```
 
 ## Specialized Agents
 
-The plugin uses 4 specialized agents, each with domain expertise defined in their role files:
+The plugin uses 3 specialized agents, each with domain expertise defined in their role files:
 
 | Agent | Role | Skills | What It Does |
 |-------|------|--------|-------------|
-| `business-analyst` | Requirements expert | analyze, stories | Extracts requirements from documents or Q&A. Detects gaps and implicit assumptions. Writes acceptance criteria in Given/When/Then. Assigns MoSCoW priorities and story points. Never assumes — asks precise questions when info is missing. |
 | `solution-architect` | Architecture expert | proposal | Designs scalable architectures. Produces Mermaid diagrams. Justifies every technical decision with trade-offs. Scales complexity to the project. |
-| `ux-designer` | Prototyping expert | prototype | Maps user stories to screens. Creates navigable HTML prototypes with Tailwind CSS. Uses realistic data from the project context. Ensures responsive design and consistent styling across all pages. |
+| `ux-designer` | Prototyping expert | prototype | Maps functional modules to screens. Creates navigable HTML prototypes with Tailwind CSS. Uses realistic data from the project context. Ensures responsive design and consistent styling across all pages. |
 | `project-planner` | Planning expert | deliver | Decomposes projects into phases and tasks. Estimates effort realistically (with 20-30% padding). Identifies dependencies and critical path. Creates Gantt charts and prioritized checklists. |
 
 Agents write in the user's chosen language (English or Spanish). Technical terms always remain in English.

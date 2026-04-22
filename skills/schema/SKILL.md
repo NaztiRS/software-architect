@@ -21,8 +21,7 @@ Read the project's context and functional artifacts, infer the domain entities a
 1. `fa-context.json` must exist (check `docs/software-architect/fa-context.json` then project root). If missing: "No project context found. Run `/software-architect:analyze` first." Stop.
 2. Strongly preferred (not required):
    - `docs/software-architect/deliverables/proposal/proposal.md` — modules describe entities implicitly
-   - `docs/software-architect/deliverables/stories/stories.md` — epics map to entity clusters
-3. If both proposal and stories are missing, work only from `fa-context.json` and flag in the output that the schema is less grounded.
+3. If proposal is missing, work only from `fa-context.json` and flag in the output that the schema is less grounded.
 
 ## Parse Arguments
 
@@ -41,9 +40,8 @@ Scan these sources in order and collect entity candidates (nouns that hold state
 | `fa-context.json` → `requirements.functional` | Nouns in "user can X the [entity]" phrasing |
 | `fa-context.json` → `integrations` | External systems often imply mirror/cache tables (`external_customers`, `sync_log`) |
 | `proposal.md` → each module's **Flow** section | Entities mentioned repeatedly across steps |
-| `stories.md` → each epic | Epics like "Task Management" → `task`, "Authentication" → `user`, `session` |
 
-**Deduplicate aggressively.** Merge synonyms (`customer`/`client`, `item`/`product`). If a concept appears once and passively, drop it.
+**Deduplicate aggressively.**
 
 ### Step 2 — Decide what deserves a table
 
