@@ -8,10 +8,10 @@
   "plugins": [
     {
       "name": "software-architect",
-      "description": "Functional Analysis & Technical Proposal generator. Generates user stories, work plans, navigable HTML prototypes, and professional corporate documents (PDF/DOCX) with rendered diagrams.",
+      "description": "Functional Analysis & Technical Proposal generator. Generates technical proposals, navigable HTML prototypes, ER schemas and professional corporate documents (PDF/DOCX) with rendered diagrams.",
       "source": "./",
       "category": "development",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "author": {
         "name": "Reynaldo Suárez"
       }

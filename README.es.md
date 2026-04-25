@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/readme-top.png" alt="Banner animado de Software Architect" width="100%">
+</p>
+
 # Software Architect
 
 Plugin de Claude Code para **Análisis Funcional y generación de Propuestas Técnicas** para proyectos de software.
@@ -9,8 +13,8 @@ Transforma requisitos de software en documentación profesional y prototipos nav
 | Entregable | Audiencia | Descripción |
 |------------|-----------|-------------|
 | **Propuesta Técnica** | Cliente / Dirección | Arquitectura, riesgos, cronograma, módulos funcionales |
-| **Plan de Trabajo** | PM / Tech Lead | Fases, tareas, dependencias, hitos, diagrama Gantt |
 | **Prototipo HTML** | Todos | Pantallas navegables y responsive con Tailwind CSS — sin dependencias |
+| **Esquema de Referencia** | Ingeniería | Diagrama ER + DDL SQL de referencia inferido a partir de la propuesta |
 
 Cada entregable se exporta en **3 formatos**: `.md`, `.docx`, `.pdf`
 
@@ -105,9 +109,9 @@ Un checkpoint de revisión te permite ajustar antes de continuar.
 
 Un checkpoint de revisión te permite ajustar antes de continuar.
 
-### Paso 4: Work Plan
+### Paso 4: Esquema de Referencia
 
-El agente **project-planner** genera el **Plan de Trabajo** — divide el proyecto en fases (MVP, v1, v2), con tareas agrupadas por épica, dependencias, hitos con entregables, un diagrama Gantt en Mermaid y un checklist priorizado para arrancar.
+El agente **solution-architect** infiere las entidades del dominio y sus relaciones a partir de los módulos de la propuesta, y emite un diagrama ER en Mermaid junto a un DDL ejecutable de PostgreSQL (`schema.sql`) con claves primarias, foráneas, índices y una sección "Open questions" para que el equipo revise.
 
 ### Paso 5: Export + Diagrams + Render
 
@@ -176,9 +180,9 @@ El plugin usa 3 agentes especializados, cada uno con expertise de dominio defini
 
 | Agente | Rol | Skills | Qué hace |
 |--------|-----|--------|----------|
-| `solution-architect` | Experto en arquitectura | proposal | Diseña arquitecturas escalables. Produce diagramas Mermaid. Justifica cada decisión técnica con trade-offs. Escala la complejidad al proyecto. |
+| `business-analyst` | Experto en requisitos | analyze | Extrae requisitos funcionales y no funcionales de documentos o Q&A interactivo. Detecta gaps e inconsistencias. Prioriza con MoSCoW. |
+| `solution-architect` | Experto en arquitectura | proposal, schema | Diseña arquitecturas escalables. Produce diagramas Mermaid. Infiere modelos de datos de referencia. Justifica cada decisión técnica con trade-offs. |
 | `ux-designer` | Experto en prototipado | prototype | Mapea módulos funcionales a pantallas. Crea prototipos HTML navegables con Tailwind CSS. Usa datos realistas del contexto del proyecto. Asegura diseño responsive y estilo consistente en todas las páginas. |
-| `project-planner` | Experto en planificación | deliver (Paso 4) | Descompone proyectos en fases y tareas. Estima esfuerzo de forma realista (con 20-30% de margen). Identifica dependencias y ruta crítica. Crea diagramas Gantt y checklists priorizados. |
 
 Los agentes escriben en el idioma elegido por el usuario (inglés o español). Los términos técnicos siempre permanecen en inglés.
 

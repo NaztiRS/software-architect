@@ -1,8 +1,8 @@
 ---
 name: schema
-description: Infer the project's domain data model from fa-context.json, user stories, and the proposal. Generates a Mermaid ER diagram (rendered to SVG/PNG) and a reference PostgreSQL DDL (schema.sql) with primary keys, foreign keys, indexes, and comments.
+description: Infer the project's domain data model from fa-context.json and the proposal. Generates a Mermaid ER diagram (rendered to SVG/PNG) and a reference PostgreSQL DDL (schema.sql) with primary keys, foreign keys, indexes, and comments.
 argument-hint: "[--dialect postgres|mysql|sqlite] [--no-render]"
-allowed-tools: "Read Write Bash Glob"
+allowed-tools: "Read, Write, Bash, Glob"
 ---
 
 You are operating as the **solution-architect** agent. This skill produces a first-pass data model that can be iterated with the client — not a production schema, but a defensible starting point the team can refine.
@@ -62,8 +62,8 @@ For each entity, define:
 
 - **Primary key** — prefer `id BIGSERIAL` (or `UUID` for distributed/public-facing IDs)
 - **Timestamps** — every table gets `created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()` and `updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`
-- **Soft delete** — add `deleted_at TIMESTAMPTZ` only if stories mention restore/archive/undo. Otherwise omit.
-- **Domain columns** — only what's justified by the stories/modules. No speculative columns.
+- **Soft delete** — add `deleted_at TIMESTAMPTZ` only if modules mention restore/archive/undo. Otherwise omit.
+- **Domain columns** — only what's justified by the modules. No speculative columns.
 - **Nullability** — be strict. `NOT NULL` by default; nullable only when the story explicitly allows absence.
 - **Uniqueness** — add UNIQUE constraints where the domain demands it (email, slug, external IDs).
 
@@ -238,7 +238,7 @@ One paragraph per entity. Format:
 ```markdown
 # {{project.name}} — Data Model
 
-Inferred from `fa-context.json` plus the proposal and stories. Reference model, not a production migration. The team should review nullability, tenancy (is everything scoped to an `organization_id`?), and soft-delete semantics before implementing.
+Inferred from `fa-context.json` plus the proposal. Reference model, not a production migration. The team should review nullability, tenancy (is everything scoped to an `organization_id`?), and soft-delete semantics before implementing.
 
 **Dialect:** PostgreSQL
 **Entities:** {N}   **Relationships:** {M}
@@ -260,7 +260,7 @@ Join table that grants users access to a project they don't own, with a per-proj
 ## Open questions for the team
 
 - Is there multi-tenancy? (No `organization_id` assumed yet.)
-- Do tasks need assignees? (Not in the analyzed stories; add `assignee_id` FK if yes.)
+- Do tasks need assignees? (Not in the analyzed modules; add `assignee_id` FK if yes.)
 - Do projects need archival vs hard delete? (No soft-delete assumed.)
 ```
 

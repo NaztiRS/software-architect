@@ -2,7 +2,7 @@
 name: validate
 description: Static consistency check across all architect deliverables. Runs a deterministic Node script that reports missing formats, broken prototype links, unrendered diagrams, and schema gaps.
 argument-hint: "[docs-dir] [--json] [--strict]"
-allowed-tools: "Read Bash"
+allowed-tools: "Read, Bash"
 ---
 
 ## Your Mission
@@ -46,7 +46,6 @@ Read the script's stdout. Pass it through verbatim to the user (don't re-format 
 - Failures in **deliverables** → run `/software-architect:deliver` or the specific skill (`/software-architect:proposal`, etc.)
 - Failures in **diagrams** → run `/software-architect:diagrams`
 - Failures in **prototype** (broken links) → re-run `/software-architect:prototype` or edit the HTML files manually
-- Failures in **stories** (orphan epic, missing trace) → review `fa-context.json` requirements and update proposal
 - Warnings for **DOCX/PDF missing** → run `/software-architect:render`
 - Warnings for **schema incomplete** → run `/software-architect:schema`
 

@@ -2,7 +2,7 @@
 name: diagrams
 description: Render the 2 Mermaid diagrams from the proposal (architecture overview + timeline Gantt) as SVG and PNG images. Uses mmdc (mermaid-cli) if installed, falls back to mermaid.ink API. Output to docs/software-architect/diagrams/.
 argument-hint: "--format [svg|png|both] --theme [neutral|dark|forest]"
-allowed-tools: "Read Write Bash Glob"
+allowed-tools: "Read, Write, Bash, Glob"
 ---
 
 ## Your Mission

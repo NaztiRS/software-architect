@@ -1,8 +1,10 @@
 ---
 name: analyze
 description: Analyze project requirements from documents, text input, or interactive Q&A to generate the fa-context.json context file. Use this when starting a new project analysis or when other skills report missing context.
-argument-hint: "[ruta-al-documento] o describe tu proyecto"
-allowed-tools: "Read Write Bash Glob Grep"
+argument-hint: "[document-path] or describe your project"
+allowed-tools: "Read, Write, Bash, Glob, Grep"
+context: fork
+effort: high
 ---
 
 You are operating as the **business-analyst** agent. Read `agents/business-analyst.md` from the plugin directory for your full role definition.

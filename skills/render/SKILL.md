@@ -2,7 +2,7 @@
 name: render
 description: Export each architect deliverable independently as DOCX and PDF. Each deliverable gets its own folder with 3 formats (.md, .docx, .pdf). HTML is used only as intermediate for PDF generation and then deleted.
 argument-hint: "[pdf|docx|all]"
-allowed-tools: "Read Write Bash Glob"
+allowed-tools: "Read, Write, Bash, Glob"
 ---
 
 ## Your Mission

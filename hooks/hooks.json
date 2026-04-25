@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node -e \"const fs=require('fs');if(fs.existsSync('docs/software-architect/fa-context.json'))process.stdout.write(JSON.stringify({additionalContext:'A previous project analysis (fa-context.json) was found in docs/software-architect/. Ask the user if they want to continue from it or start fresh.'}));\""
+            "command": "node -e \"const fs=require('fs');if(fs.existsSync('docs/software-architect/fa-context.json'))process.stdout.write(JSON.stringify({additionalContext:'A previous architect run was interrupted: docs/software-architect/fa-context.json still exists (it is normally deleted at the end of /software-architect:deliver). Ask the user whether to resume from this context or start fresh.'}));\""
           }
         ]
       }

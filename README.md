@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/readme-top.png" alt="Software Architect animated README banner" width="100%">
+</p>
+
 # Software Architect
 
 A Claude Code plugin for **Functional Analysis & Technical Proposal generation** for software projects.
@@ -9,8 +13,8 @@ Transform project requirements into enterprise-grade documentation and navigable
 | Deliverable | Audience | Description |
 |------------|----------|-------------|
 | **Technical Proposal** | Client / Direction | Architecture, risks, timeline, functional modules |
-| **Work Plan** | PM / Tech Lead | Phases, tasks, dependencies, milestones, Gantt chart |
 | **HTML Prototype** | Everyone | Navigable, responsive screens built with Tailwind CSS — zero dependencies |
+| **Reference Schema** | Engineering | ER diagram + reference SQL DDL inferred from the proposal |
 
 Each deliverable is exported in **3 formats**: `.md`, `.docx`, `.pdf`
 
@@ -105,9 +109,9 @@ A review checkpoint lets you adjust before moving on.
 
 A review checkpoint lets you adjust before moving on.
 
-### Step 4: Work Plan
+### Step 4: Reference Schema
 
-The **project-planner** agent generates the **Work Plan** — breaking the project into phases (MVP, v1, v2), with tasks grouped by epic, dependencies, milestones with deliverables, a Mermaid Gantt chart, and a prioritized getting-started checklist.
+The **solution-architect** agent infers the project's domain entities and relationships from the proposal's modules, and emits a Mermaid ER diagram plus a runnable PostgreSQL DDL (`schema.sql`) with primary keys, foreign keys, indexes and an "Open questions" section for the team to review.
 
 ### Step 5: Export + Diagrams + Render
 
@@ -178,9 +182,9 @@ The plugin uses 3 specialized agents, each with domain expertise defined in thei
 
 | Agent | Role | Skills | What It Does |
 |-------|------|--------|-------------|
-| `solution-architect` | Architecture expert | proposal | Designs scalable architectures. Produces Mermaid diagrams. Justifies every technical decision with trade-offs. Scales complexity to the project. |
+| `business-analyst` | Requirements expert | analyze | Extracts functional and non-functional requirements from documents or interactive Q&A. Detects gaps and inconsistencies. Prioritizes with MoSCoW. |
+| `solution-architect` | Architecture expert | proposal, schema | Designs scalable architectures. Produces Mermaid diagrams. Infers reference data models. Justifies every technical decision with trade-offs. |
 | `ux-designer` | Prototyping expert | prototype | Maps functional modules to screens. Creates navigable HTML prototypes with Tailwind CSS. Uses realistic data from the project context. Ensures responsive design and consistent styling across all pages. |
-| `project-planner` | Planning expert | deliver | Decomposes projects into phases and tasks. Estimates effort realistically (with 20-30% padding). Identifies dependencies and critical path. Creates Gantt charts and prioritized checklists. |
 
 Agents write in the user's chosen language (English or Spanish). Technical terms always remain in English.
 

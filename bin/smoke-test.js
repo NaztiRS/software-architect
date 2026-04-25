@@ -333,11 +333,9 @@ setupFixture();
   // Build a tiny docs/software-architect-like tree inside the smoke test dir
   const valRoot = path.join(testDir, 'val-docs', 'architect');
   const prop = path.join(valRoot, 'deliverables', 'proposal');
-  const stor = path.join(valRoot, 'deliverables', 'stories');
-  const todo = path.join(valRoot, 'deliverables', 'todo');
   const diag = path.join(valRoot, 'diagrams');
   const proto = path.join(valRoot, 'prototype');
-  [prop, stor, todo, diag, path.join(proto, 'pages')].forEach(d => fs.mkdirSync(d, { recursive: true }));
+  [prop, diag, path.join(proto, 'pages')].forEach(d => fs.mkdirSync(d, { recursive: true }));
 
   fs.writeFileSync(path.join(valRoot, 'fa-context.json'), JSON.stringify({
     project: { name: 'VD', description: 'Validate fixture', domain: 'x', scale: 's' },
@@ -346,9 +344,6 @@ setupFixture();
   }));
   fs.writeFileSync(path.join(prop, 'proposal.md'),
     '# Proposal\n```mermaid\ngraph TD\nA-->B\n```\n**MODULE 1: Auth**\n');
-  fs.writeFileSync(path.join(stor, 'stories.md'),
-    '# Stories\n## Epic E1: Auth\n- covers FR-001 [MUST]\n');
-  fs.writeFileSync(path.join(todo, 'todo.md'), '# Todo\nAuth stuff.\n');
   // Render a fake PNG so diagram check passes
   const pngBuf = Buffer.from('89504e470d0a1a0a0000000d49484452000000010000000108060000001f15c4890000000d49444154789c63000100000005000101ff00000000049144180000000049454e44ae426082', 'hex');
   fs.writeFileSync(path.join(diag, 'architecture-overview.png'), pngBuf);
@@ -356,6 +351,8 @@ setupFixture();
   fs.writeFileSync(path.join(proto, 'index.html'), '<html><body><a href="pages/ok.html">ok</a></body></html>');
   fs.writeFileSync(path.join(proto, 'pages', 'ok.html'), '<html><body>ok</body></html>');
 
+  // proposal.md has no docx/pdf in this fixture — those are warnings, not failures.
+  // Pass without --strict so warnings don't cause exit code 1.
   const r = runNode('validate.js', [valRoot]);
   if (r.status !== 0) {
     log(false, 'validate.js', 'exit ' + r.status + ' — ' + (r.stdout.split('\n').pop() || r.stderr.split('\n').pop()));
@@ -365,8 +362,6 @@ setupFixture();
   const checks = [
     [/project identified/.test(out), 'context check'],
     [/mermaid fence/.test(out), 'diagram count check'],
-    [/epic\(s\) declared/.test(out), 'epic declaration check'],
-    [/MoSCoW badge/.test(out), 'MoSCoW badge check'],
     [/all internal links resolve/.test(out), 'prototype link check'],
     [/0 failures/.test(out), 'no failures on a clean fixture']
   ];

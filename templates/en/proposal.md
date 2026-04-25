@@ -7,62 +7,65 @@
 
 ---
 
-## 1. Executive Summary
+<!--
+  Structure source of truth: templates/style-reference.md
+  Sections must follow that order and tone exactly.
+  The HTML blocks for §3 (Executive Summary) and §13 (Risk Register) are detected
+  by bin/build-report-html.js and bin/generate-docx.js — emit them verbatim.
+-->
 
-{{executive_summary}}
+## 1. Cover Page
 
-## 2. Project Scope
+## 2. Index
 
-### 2.1 In Scope
+## 3. Executive Summary
 
-{{in_scope}}
+<!-- Emit the <div class="exec-summary"> block from style-reference §3 -->
 
-### 2.2 Out of Scope
+## 4. Target Market & Ideal Client
 
-{{out_of_scope}}
+## 5. Understanding the Need
 
-## 3. High-Level Architecture
+## 6. Project Objectives
 
-{{architecture_description}}
+## 7. Functional Scope
+
+### 7.1 In Scope
+
+### 7.2 Out of Scope
+
+### 7.3 Preconditions
+
+### 7.4 Assumptions
+
+## 8. Detailed Functional Proposal
+
+<!-- One MODULE N block per functional area, with Objective / Trigger / Flow / Development Tasks -->
+
+## 9. Implementation Timeline
+
+<!-- Total Estimated Duration, Methodology, then one MILESTONE N block per sprint -->
+
+## 10. Technical Architecture
 
 ```mermaid
 {{architecture_diagram}}
 ```
 
-## 4. Main Components
+<!-- Technology Stack table, Planned Integrations, Infrastructure & Environments -->
 
-| Component | Responsibility | Key Technologies |
-|-----------|---------------|-----------------|
-{{components_table}}
+## 11. Proposed Team
 
-## 5. Integration Points
+## 12. Budget
 
-{{integrations_detail}}
+## 13. Risk Register
 
-## 6. Non-Functional Requirements
+<!-- Emit the <div class="risk-register"> block from style-reference §13 -->
 
-| ID | Category | Requirement | How It's Addressed |
-|----|----------|------------|-------------------|
-{{nfr_table}}
+## 14. Support Service
 
-## 7. Risks & Mitigations
-
-| # | Risk | Likelihood | Impact | Mitigation |
-|---|------|-----------|--------|------------|
-{{risks_table}}
-
-## 8. Effort Estimation
-
-| Phase | Effort (story points) | Duration | Team |
-|-------|----------------------|----------|------|
-{{effort_table}}
-
-## 9. Tentative Timeline
+## 15. Gantt Timeline
 
 ```mermaid
 {{timeline_gantt}}
 ```
-
-## 10. Next Steps
-
-{{next_steps}}

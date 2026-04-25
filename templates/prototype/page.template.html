@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="{{output_config.language}}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{project.name}} — [Page Title]</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#EFF6FF', 100: '#DBEAFE', 400: '#60A5FA',
+              500: '#2563EB', 700: '#2C5282', 800: '#1B365D', 900: '#0F1B3D'
+            },
+            ink: {
+              50: '#F8FAFC', 100: '#F1F5F9', 200: '#E2E8F0', 300: '#CBD5E1',
+              400: '#94A3B8', 500: '#64748B', 600: '#475569', 700: '#334155',
+              800: '#1E293B', 900: '#0F172A'
+            }
+          },
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          borderRadius: { DEFAULT: '10px', md: '10px', lg: '14px', xl: '20px' }
+        }
+      }
+    };
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="../assets/tokens.css">
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body class="min-h-screen">
+  <!-- Top bar -->
+  <header class="sticky top-0 z-30 bg-[var(--surface)] border-b border-ink-200 backdrop-blur">
+    <div class="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
+      <div class="flex items-center gap-6">
+        <a href="../index.html" class="flex items-center gap-2 font-bold text-ink-900 dark:text-white">
+          <span class="w-8 h-8 rounded-lg bg-brand-800 text-white flex items-center justify-center text-sm font-black">{{project.initials}}</span>
+          <span>{{project.name}}</span>
+        </a>
+        <nav class="hidden md:flex gap-1">
+          <!-- Render one link per main module -->
+          <a data-nav href="../index.html" class="nav-link">Dashboard</a>
+          <!-- ... -->
+        </nav>
+      </div>
+      <div class="flex items-center gap-2">
+        <button class="btn btn-ghost" onclick="toggleTheme()" aria-label="Toggle theme">
+          <i data-lucide="sun" class="w-4 h-4 hidden dark:inline"></i>
+          <i data-lucide="moon" class="w-4 h-4 inline dark:hidden"></i>
+        </button>
+        <div class="w-8 h-8 rounded-full bg-brand-50 text-brand-700 flex items-center justify-center text-xs font-bold">
+          {{sample_user_initials}}
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-8">
+    <!-- Page content -->
+  </main>
+
+  <script src="../assets/app.js"></script>
+</body>
+</html>

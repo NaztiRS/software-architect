@@ -8,8 +8,6 @@
  *   - fa-context.json exists and has required fields
  *   - Each expected deliverable exists in all three formats (md / docx / pdf)
  *   - Diagrams referenced in proposal.md are rendered under diagrams/
- *   - User stories reference epics that exist
- *   - MoSCoW badges use recognised values
  *   - Prototype internal links resolve to existing HTML files
  *   - Prototype <img> local paths resolve to existing files
  *   - Schema artifacts, if present, are consistent (SVG/PNG for every .mmd)
@@ -106,7 +104,7 @@ try {
     rootEntries.forEach(function (f) {
       // Check if this .md should be inside deliverables/
       const name = f.replace(/\.md$/, '');
-      if (['proposal'].indexOf(name) !== -1) {
+      if (name === 'proposal') {
         fail('paths', name + '.md is in the root — should be in deliverables/' + name + '/' + f, path.join(docsDir, f));
         strayFiles.push(f);
       }

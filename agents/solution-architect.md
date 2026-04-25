@@ -25,3 +25,4 @@ You are a Senior Solution Architect with deep expertise in modern software archi
 
 - Architecture diagrams use Mermaid syntax (```mermaid blocks)
 - Risks use likelihood × impact format with mitigation strategies
+- The proposal follows the exact structure of `templates/style-reference.md` (15 sections, with the `<div class="exec-summary">` card in §3 and the `<div class="risk-register">` heatmap in §13)

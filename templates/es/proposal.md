@@ -7,62 +7,65 @@
 
 ---
 
-## 1. Resumen Ejecutivo
+<!--
+  Fuente única de la estructura: templates/style-reference.md
+  Las secciones deben seguir ese orden y tono exactamente.
+  Los bloques HTML de §3 (Resumen Ejecutivo) y §13 (Registro de Riesgos) son
+  detectados por bin/build-report-html.js y bin/generate-docx.js — emítelos tal cual.
+-->
 
-{{executive_summary}}
+## 1. Portada
 
-## 2. Alcance del Proyecto
+## 2. Índice
 
-### 2.1 Dentro del Alcance
+## 3. Resumen Ejecutivo
 
-{{in_scope}}
+<!-- Emite el bloque <div class="exec-summary"> definido en style-reference §3 -->
 
-### 2.2 Fuera del Alcance
+## 4. Mercado Objetivo y Cliente Ideal
 
-{{out_of_scope}}
+## 5. Comprensión de la Necesidad
 
-## 3. Arquitectura de Alto Nivel
+## 6. Objetivos del Proyecto
 
-{{architecture_description}}
+## 7. Alcance Funcional
+
+### 7.1 Dentro del Alcance
+
+### 7.2 Fuera del Alcance
+
+### 7.3 Precondiciones
+
+### 7.4 Supuestos
+
+## 8. Propuesta Funcional Detallada
+
+<!-- Un bloque MÓDULO N por área funcional, con Objetivo / Trigger / Flujo / Tareas de Desarrollo -->
+
+## 9. Cronograma de Implementación
+
+<!-- Duración Estimada Total, Metodología y un bloque HITO N por sprint -->
+
+## 10. Arquitectura Técnica
 
 ```mermaid
 {{architecture_diagram}}
 ```
 
-## 4. Componentes Principales
+<!-- Tabla de Stack Tecnológico, Integraciones Previstas, Infraestructura y Entornos -->
 
-| Componente | Responsabilidad | Tecnologías Clave |
-|-----------|----------------|------------------|
-{{components_table}}
+## 11. Equipo Propuesto
 
-## 5. Puntos de Integración
+## 12. Presupuesto
 
-{{integrations_detail}}
+## 13. Registro de Riesgos
 
-## 6. Requisitos No Funcionales
+<!-- Emite el bloque <div class="risk-register"> definido en style-reference §13 -->
 
-| ID | Categoría | Requisito | Cómo se Aborda |
-|----|-----------|----------|----------------|
-{{nfr_table}}
+## 14. Servicio de Soporte
 
-## 7. Riesgos y Mitigaciones
-
-| # | Riesgo | Probabilidad | Impacto | Mitigación |
-|---|--------|-------------|---------|------------|
-{{risks_table}}
-
-## 8. Estimación de Esfuerzo
-
-| Fase | Esfuerzo (story points) | Duración | Equipo |
-|------|------------------------|----------|--------|
-{{effort_table}}
-
-## 9. Cronograma Tentativo
+## 15. Cronograma Gantt
 
 ```mermaid
 {{timeline_gantt}}
 ```
-
-## 10. Próximos Pasos
-
-{{next_steps}}

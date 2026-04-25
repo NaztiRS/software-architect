@@ -1,15 +1,15 @@
 ---
 name: deliver
 description: Run the complete architect pipeline — analyze requirements, generate technical proposal, HTML prototype, and export all deliverables. Accepts a requirements document or starts interactive Q&A.
-argument-hint: "[ruta-documento] [--no-review] [--lang en|es]"
-allowed-tools: "Read Write Bash Glob Agent"
+argument-hint: "[document-path] [--no-review] [--lang en|es]"
+allowed-tools: "Read, Write, Bash, Glob, Agent"
 context: fork
 effort: high
 ---
 
 ## Your Mission
 
-Orchestrate the full architect pipeline. Generate all deliverables directly in this session — only use subagents for truly parallel work (proposal+stories+prototype).
+Orchestrate the full architect pipeline. Generate all deliverables directly in this session — only use subagents for truly parallel work (proposal+prototype).
 
 ## Expected Output Structure
 
@@ -141,10 +141,14 @@ export PUPPETEER_EXECUTABLE_PATH="$CHROME_PATH"
 
 The plugin declares its dependencies in `package.json` (inside the plugin directory). All tools (`mmdc`, `puppeteer`, `docx`) are installed **locally** in `<plugin-dir>/node_modules/`, never globally.
 
-Check if already installed:
+Check if already installed (`$CLAUDE_PLUGIN_ROOT` is provided by Claude Code when the plugin is invoked):
 
 ```bash
-PLUGIN_DIR="${CLAUDE_PLUGIN_ROOT:-$(dirname "$(dirname "$0")")}"
+if [ -z "$CLAUDE_PLUGIN_ROOT" ]; then
+  echo "ERROR: CLAUDE_PLUGIN_ROOT not set. The plugin must be invoked through Claude Code."
+  exit 1
+fi
+PLUGIN_DIR="$CLAUDE_PLUGIN_ROOT"
 [ -d "$PLUGIN_DIR/node_modules" ] && echo "deps: ✅" || echo "deps: ❌"
 ```
 
@@ -190,7 +194,7 @@ Invoke the analyze skill logic directly (no subagent needed):
 After completion, inform the user:
 > "✅ **Analysis complete.** Context saved to `docs/software-architect/fa-context.json`.
 > Completeness: [X]%. [Missing items if any].
-> Next: generating technical proposal and user stories..."
+> Next: generating technical proposal..."
 
 ## Step 2: Proposal (Subagent)
 
@@ -205,19 +209,6 @@ Reads from `fa-context.json`.
 
 Pass this instruction explicitly to the subagent prompt.
 
-After completion, **verify output**:
-
-```bash
-ls -la docs/software-architect/deliverables/proposal/proposal.md
-```
-
-If the file is missing from the expected path, check if it was written to the wrong location (e.g., root of `docs/software-architect/`). If so, move it:
-
-```bash
-mkdir -p docs/software-architect/deliverables/proposal
-mv docs/software-architect/proposal.md docs/software-architect/deliverables/proposal/proposal.md 2>/dev/null
-```
-
 > "✅ **Proposal generated.**
 > - Proposal: `docs/software-architect/deliverables/proposal/proposal.md` — [brief summary]"
 
@@ -228,7 +219,7 @@ mv docs/software-architect/proposal.md docs/software-architect/deliverables/prop
 
 Generate the prototype using a subagent:
 
-- **Agent:** Generate prototype following `skills/prototype/SKILL.md` logic. Uses `stories.md` from Step 2.
+- **Agent:** Generate prototype following `skills/prototype/SKILL.md` logic. Uses the proposal modules from Step 2.
 
 After completion:
 > "✅ **Prototype generated.**
@@ -239,7 +230,7 @@ After completion:
 
 ## Step 4: Schema (Direct — No Subagent)
 
-Generate the reference data model following `skills/schema/SKILL.md` logic. Reads `fa-context.json`, `proposal.md` and `stories.md` to infer entities + relationships, and emits:
+Generate the reference data model following `skills/schema/SKILL.md` logic. Reads `fa-context.json` and `proposal.md` to infer entities + relationships, and emits:
 
 - `docs/software-architect/schema/er-diagram.mmd` (Mermaid erDiagram source)
 - `docs/software-architect/schema/schema.sql` (reference DDL, PostgreSQL by default)
@@ -247,19 +238,7 @@ Generate the reference data model following `skills/schema/SKILL.md` logic. Read
 
 Rendering of the ER diagram happens in Step 6 together with the proposal diagrams (single `render-diagrams.js` pass over all `.mmd` files).
 
-**CRITICAL:** Create `schema/` directory before writing. Verify after:
-
-```bash
-mkdir -p docs/software-architect/schema
-```
-
-After completion, **verify output**:
-
-```bash
-ls docs/software-architect/schema/er-diagram.mmd docs/software-architect/schema/schema.sql
-```
-
-If `.mmd` or `.sql` ended up elsewhere (e.g., as `er-diagram.md` instead of `er-diagram.mmd`), rename them.
+Create `docs/software-architect/schema/` before writing.
 
 > "✅ **Schema generated.** {N} entities, {M} relationships — `docs/software-architect/schema/`."
 
@@ -274,31 +253,18 @@ Run both directly in this session:
 1. **Diagrams:** Extract the 2 Mermaid diagrams from proposal.md plus the ER diagram from `docs/software-architect/schema/er-diagram.mmd` (if Step 4 produced one), and render them all as SVG/PNG following `skills/diagrams/SKILL.md` logic. The ER diagram renders in place — its outputs live under `docs/software-architect/schema/`.
 2. **Render:** Generate DOCX and PDF for each deliverable independently following `skills/render/SKILL.md` logic
 
-**IMPORTANT:** Before calling mmdc or any puppeteer script, ensure `PUPPETEER_EXECUTABLE_PATH` is set:
-```bash
-export PUPPETEER_EXECUTABLE_PATH="[Chrome path from Step 0]"
-```
+`PUPPETEER_EXECUTABLE_PATH` must still be set in this session (from Step 0.2). Create `docs/software-architect/diagrams/` before rendering.
 
-**IMPORTANT:** Create the diagrams directory before rendering:
-```bash
-mkdir -p docs/software-architect/diagrams
-```
-
-After rendering, **verify all expected files exist**:
+After rendering, verify the expected outputs in one pass:
 
 ```bash
-echo "=== Diagrams ==="
-ls docs/software-architect/diagrams/*.png docs/software-architect/diagrams/*.svg 2>/dev/null || echo "NO DIAGRAM IMAGES FOUND"
-echo "=== Deliverables ==="
-for name in proposal; do
-  echo "--- $name ---"
-  ls docs/software-architect/deliverables/$name/$name.{md,docx,pdf} 2>/dev/null || echo "  MISSING FILES for $name"
-done
-echo "=== Schema ==="
-ls docs/software-architect/schema/er-diagram.{mmd,png,svg} docs/software-architect/schema/schema.sql 2>/dev/null || echo "MISSING SCHEMA FILES"
+ls docs/software-architect/diagrams/*.png \
+   docs/software-architect/deliverables/proposal/proposal.{md,docx,pdf} \
+   docs/software-architect/schema/er-diagram.{mmd,png} \
+   docs/software-architect/schema/schema.sql 2>/dev/null
 ```
 
-If any files are missing, report which ones and attempt to re-run the specific sub-step before continuing.
+If any are missing, report which and re-run the specific sub-step before continuing.
 
 Delete the internal context file now that all deliverables are produced:
 
@@ -329,21 +295,21 @@ After completion:
 
 Run the built-in validator. If it finds failures, **automatically retry** the failing areas up to 2 times before reporting to the user.
 
-### 8.1 Run Validation
+### 7.1 Run Validation
 
 ```bash
 node "$CLAUDE_PLUGIN_ROOT/bin/validate.js" "docs/software-architect"
 ```
 
-Note: `fa-context.json` has already been deleted in Step 7. The validator treats a missing `fa-context.json` as a **warning**, not a failure.
+Note: `fa-context.json` has already been deleted in Step 6. The validator treats a missing `fa-context.json` as a **warning**, not a failure.
 
-### 8.2 If Exit Code 0
+### 7.2 If Exit Code 0
 
 Validation passed. Proceed to Step 8 (cleanup).
 
 > "✅ **Validation: {N} ok, {M} warnings, {K} failures.**"
 
-### 8.3 If Exit Code 1 — Auto-Fix Loop
+### 7.3 If Exit Code 1 — Auto-Fix Loop
 
 Parse the validator output to identify which areas failed. For each failing area, take corrective action:
 
@@ -355,7 +321,6 @@ Parse the validator output to identify which areas failed. For each failing area
 | `diagrams` missing PNG/SVG | Re-run diagram rendering: extract Mermaid from `deliverables/proposal/proposal.md` and render with `bin/render-diagrams.js` or mermaid.ink fallback |
 | `schema` missing PNG | Re-run ER diagram rendering with `bin/render-diagrams.js` |
 | `prototype` broken links | Check prototype HTML and fix broken navigation links |
-| `stories` orphan epics | (removed — stories skill no longer exists) |
 
 After applying fixes, **re-run validation**:
 
@@ -405,13 +370,9 @@ If **A**:
 
 ## Windows Compatibility
 
-This plugin must work on Windows. Follow these rules:
-
-- **Always use Node.js for scripts** — never Python. Python is not installed by default on Windows. Node.js is guaranteed available if npm tools are installed.
-- **Chrome path on Windows:** `C:/Program Files/Google/Chrome/Application/chrome.exe` — always check this path and set `PUPPETEER_EXECUTABLE_PATH` before using mmdc or puppeteer.
-- **Never use heredocs for complex scripts.** Bash heredocs with nested quotes break on Windows Git Bash. Instead, use the Write tool to create a temporary `.js` file, then run it with `node temp-file.js`, then delete the temp file.
-- **Path separators:** Use forward slashes `/` in all paths, even on Windows. Git Bash handles the conversion.
-- **No `python3` command** — on Windows it's `python` or doesn't exist. Avoid entirely.
+- Forward slashes in all paths; Git Bash handles them.
+- Never use Python — Node.js only.
+- Never use bash heredocs for non-trivial scripts on Windows; write to a temp `.js` and execute it.
 
 ## Error Handling
 
